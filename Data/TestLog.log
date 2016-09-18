@@ -1,0 +1,14 @@
+2016-09-18 10:27:49,696 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 139, in <module>
+    test.ProbeTestHighFreq(freq=18000, fieldintensity=10, dist=0.7)
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 55, in ProbeTestHighFreq
+    sg = SGHigh(self.Highsgaddr, self.rm)
+AttributeError: 'ProbeTest' object has no attribute 'Highsgaddr'
+
+2016-09-18 10:27:49,696 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 139, in <module>
+    test.ProbeTestHighFreq(freq=18000, fieldintensity=10, dist=0.7)
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 55, in ProbeTestHighFreq
+    sg = SGHigh(self.Highsgaddr, self.rm)
+AttributeError: 'ProbeTest' object has no attribute 'Highsgaddr'
+

@@ -29,7 +29,7 @@ class ProbeTest(object):
         self.dbname = "\\TestResult\\Database\\" + dbname + ".accdb"
         self.Log()
         self.db = Access(self.dbname)
-        self.db.CreateSerial()
+        self.serial = self.db.CreateSerial()
 
     def Log(self):
         """Initialise the log function."""
@@ -81,8 +81,21 @@ class ProbeTest(object):
                           a assertion error, the unit is V/m.
         ===============   =====================================================
         """
+        column = ("Frequency_GHz, Field_V_per_m, FieldResult_V_per_m,"
+                  " TestSeries")
         self.db.CreateTable(
-            tablename=None, columnnamelist=None, typelist=None)
+            tablename="场强线性度",
+            columnnamelist=column.split(", "),
+            typelist=["DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE"])
+        assert type(freq) == list
+        assert type(field) == list
+        for frequency in freq:
+            for intensity in field:
+                self.db.cursor.execute(
+                    "INSERT INTO 场强线性度 (%s) VALUES"
+                    "(%f, %f, %f, %d)"
+                    % (column, frequency, intensity, 10, self.serial))
+                self.db.Commit()
 
     def PowerIter(self, powertarget=None, freq=None,
                   sg=None, pa=None, pm=None, highfreq=True):
@@ -150,8 +163,9 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     try:
         test = ProbeTest()
-        test.ProbeTestHighFreq(freq=18000, fieldintensity=10, dist=0.7)
-    finally:
+        test.FieldTestHighFreq([10, 20], [20, 34])
+        # test.ProbeTestHighFreq(freq=18000, fieldintensity=10, dist=0.7)
+    except:
         logger = logging.getLogger()
         handler = logging.FileHandler("Data\\TestLog.log")
         formatter = logging.Formatter(

@@ -12,3 +12,363 @@ AttributeError: 'ProbeTest' object has no attribute 'Highsgaddr'
     sg = SGHigh(self.Highsgaddr, self.rm)
 AttributeError: 'ProbeTest' object has no attribute 'Highsgaddr'
 
+2016-09-18 16:08:48,396 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 157, in <module>
+    test.ProbeTestHighFreq(freq=18000, fieldintensity=10, dist=0.7)
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 55, in ProbeTestHighFreq
+    sg = SGHigh(self.Highsgaddr, self.rm)
+AttributeError: 'ProbeTest' object has no attribute 'Highsgaddr'
+
+2016-09-18 16:08:48,396 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 157, in <module>
+    test.ProbeTestHighFreq(freq=18000, fieldintensity=10, dist=0.7)
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 55, in ProbeTestHighFreq
+    sg = SGHigh(self.Highsgaddr, self.rm)
+AttributeError: 'ProbeTest' object has no attribute 'Highsgaddr'
+
+2016-09-18 16:11:07,922 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 158, in <module>
+    test.FieldTestHighFreq()
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 89, in FieldTestHighFreq
+    assert type(freq) == list
+AssertionError
+
+2016-09-18 16:11:07,922 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 158, in <module>
+    test.FieldTestHighFreq()
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 89, in FieldTestHighFreq
+    assert type(freq) == list
+AssertionError
+
+2016-09-18 16:46:08,180 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 165, in <module>
+    test.FieldTestHighFreq()
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 90, in FieldTestHighFreq
+    assert type(freq) == list
+AssertionError
+
+2016-09-18 16:46:08,180 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 165, in <module>
+    test.FieldTestHighFreq()
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 90, in FieldTestHighFreq
+    assert type(freq) == list
+AssertionError
+
+2016-09-18 16:46:31,077 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 166, in <module>
+    test.FieldTestHighFreq()
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 90, in FieldTestHighFreq
+    assert type(freq) == list
+AssertionError
+
+2016-09-18 16:46:31,077 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 166, in <module>
+    test.FieldTestHighFreq()
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 90, in FieldTestHighFreq
+    assert type(freq) == list
+AssertionError
+
+2016-09-18 16:46:51,252 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 166, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 97, in FieldTestHighFreq
+    % (column, frequency, intensity, 10, self.serial))
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\Access.py", line 58, in Execute
+    self.cursor.execute(command)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:46:51,252 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 166, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 97, in FieldTestHighFreq
+    % (column, frequency, intensity, 10, self.serial))
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\Access.py", line 58, in Execute
+    self.cursor.execute(command)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:47:48,702 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 166, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 97, in FieldTestHighFreq
+    % (column, frequency, intensity, 10, self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:47:48,702 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 166, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 97, in FieldTestHighFreq
+    % (column, frequency, intensity, 10, self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:48:56,755 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:48:56,755 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:49:43,489 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:49:43,489 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:51:34,411 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:51:34,411 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:52:01,440 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:52:01,440 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:52:43,436 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 168, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 99, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:52:43,436 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 168, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 99, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Microsoft Access Driver] INSERT INTO 语句的语法错误。')
+
+2016-09-18 16:53:12,704 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', "[42000] [Microsoft][ODBC Microsoft Access Driver] 语法错误 (操作符丢失) 在查询表达式 '10.000000 20.000000 10.000000 18' 中。")
+
+2016-09-18 16:53:12,704 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', "[42000] [Microsoft][ODBC Microsoft Access Driver] 语法错误 (操作符丢失) 在查询表达式 '10.000000 20.000000 10.000000 18' 中。")
+
+2016-09-18 16:53:36,841 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', "[42000] [Microsoft][ODBC Microsoft Access Driver] 语法错误 (操作符丢失) 在查询表达式 '10.000000 20.000000 10.000000 19' 中。")
+
+2016-09-18 16:53:36,841 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', "[42000] [Microsoft][ODBC Microsoft Access Driver] 语法错误 (操作符丢失) 在查询表达式 '10.000000 20.000000 10.000000 19' 中。")
+
+2016-09-18 16:54:59,376 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    % (column, frequency, intensity, 10, self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', "[42000] [Microsoft][ODBC Microsoft Access Driver] 语法错误 (操作符丢失) 在查询表达式 '10.000000 20.000000 10.000000 20' 中。")
+
+2016-09-18 16:54:59,376 - root - ERROR -Traceback (most recent call last):
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 167, in <module>
+    test.FieldTestHighFreq([10, 20], [20, 34])
+  File "D:\FangCloudSync\中国信息通信研究院\Coding\New FS Project\ProbeTest.py", line 98, in FieldTestHighFreq
+    % (column, frequency, intensity, 10, self.serial))
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1605, in execute
+    self.execdirect(query_string)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 1631, in execdirect
+    check_success(self, ret)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 986, in check_success
+    ctrl_err(SQL_HANDLE_STMT, ODBC_obj.stmt_h, ret, ODBC_obj.ansi)
+  File "C:\Python34\lib\site-packages\pypyodbc.py", line 954, in ctrl_err
+    raise ProgrammingError(state,err_text)
+pypyodbc.ProgrammingError: ('42000', "[42000] [Microsoft][ODBC Microsoft Access Driver] 语法错误 (操作符丢失) 在查询表达式 '10.000000 20.000000 10.000000 20' 中。")
+

@@ -184,7 +184,7 @@ class Access(object):
 
 if __name__ == "__main__":
     db = Access("/Data/test.accdb")
-    db.CreateSerial()
+    print(db.CreateSerial())
     # db.CreateTable("InfoPosition", columnnamelist=["Name",
     #                "TableNum", "Col", "row"],
     #                typelist=["VARCHAR(30)", "INT", "INT", "INT"])

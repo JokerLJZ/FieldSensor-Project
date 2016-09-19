@@ -6,7 +6,7 @@ Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
 You could read the sorce code of this programme.
 Commercial use was not allowed.
 """
-# -*- coding: utf-8 -*-
+
 from PyQt5.QtWidgets import (QRadioButton, QGridLayout, QGroupBox, QLineEdit,
                              QVBoxLayout, QLabel, QPushButton)
 from BasicUI.TestDialog import TestDialog
@@ -175,4 +175,4 @@ class FSTestDialog(TestDialog):
             frequency_list = [1]
         for i in range(len(frequency_list)):
             self.freq_lineedit_box[i].setText(str(frequency_list[i]))
-        self.freq_lineedit_box[1].clear
+        self.freq_lineedit_box[1].clear()

@@ -117,6 +117,8 @@ class Access(object):
         else:
             sql = "INSERT INTO TestDate (TestDate) VALUES (NOW())"
             self.Execute(sql)
+        sql = "SELECT LAST(TestSeriesNo) FROM TestDate"
+        return self.cursor.execute(sql).fetchone()[0]
 
     def GetTableContent(self, tablename=None, columnname=None):
         """Get all table content, return a list group.

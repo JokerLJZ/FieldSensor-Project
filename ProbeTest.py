@@ -26,9 +26,11 @@ class ProbeTest(object):
         self.ctaddr = ctaddr
         self.pmhighaddr = pmhighaddr
         self.probetype = probetype
-        self.dbname = "\\TestResult\\Database\\" + dbname + ".accdb"
         self.Log()
-        self.db = Access(self.dbname)
+        dbname = "\\TestResult\\Database\\" + dbname + ".accdb"
+        dbinfoname = "\\Data\\BasicInfo.accdb"
+        self.db = Access(dbname)
+        self.info = Access(dbinfoname)
         self.serial = self.db.CreateSerial()
 
     def Log(self):
@@ -55,11 +57,13 @@ class ProbeTest(object):
         sg = SGHigh(self.Highsgaddr, self.rm)
         pa = PAHigh(self.Highpaaddr, self.rm)
         pm = PM(self.pmhighaddr, self.rm)
-        QMessageBox.information(
-            None, "提示", "请连接好电场探头")
+        ct = CT(self.ctaddr, self.rm)
         couple = CalHighFreq(freq / 1e3, fieldintensity, dist)
         QMessageBox.information(
+            None, "提示", "请连接好电场探头")
+        QMessageBox.information(
             None, "提示", "请连接%s天线进行测试" % couple["Antenna"])
+        ct.CTAntennaRoll(couple["Antenna"])
         powertarget = couple["PowerMeter"]
         self.PowerIter(target=powertarget, freq=freq, sg=sg, pa=pa, pm=pm)
         value = self.ReadValue()
@@ -70,18 +74,19 @@ class ProbeTest(object):
         pm.PMClose()
         return value
 
-    def FieldTestHighFreq(self, freq=None, field=None):
-        """Test the probe in specific frequency and field intensity.
+    def LinearityHighFreq(self, freq=None, field=None):
+        """Test the Linearity of probe in specific frequency and field
+           intensity.
 
         ===============   =====================================================
         **Argument:**
         freq              Defalt is None. freq should be a list if not will
                           raise a assertion error. Unit should be MHz.
-        fieldintensity    Defalt is None, should be a list, if not will raise
+        field             Defalt is None, should be a list, if not will raise
                           a assertion error, the unit is V/m.
         ===============   =====================================================
         """
-        column = ("Frequency_GHz, Field_V_per_m, FieldResult_V_per_m,"
+        column = ("Frequency__MHz, Field__V_per_m, FieldResult__V_per_m,"
                   " TestSeries")
         self.db.CreateTable(
             tablename="场强线性度",
@@ -91,11 +96,79 @@ class ProbeTest(object):
         assert type(field) == list
         for frequency in freq:
             for intensity in field:
+                QMessageBox.information(
+                    None, "提示", "将要开始进行%sMHz强度%sV/m的测试"
+                    % (freq, intensity))
+                value = self.ProbeTestHighFreq(
+                    freq=frequency, fieldintensity=intensity)
                 self.db.cursor.execute(
-                    "INSERT INTO 场强线性度 (%s) VALUES"
-                    "(%f, %f, %f, %d)"
-                    % (column, frequency, intensity, 10, self.serial))
+                    "INSERT INTO 场强线性度 (%s) VALUES (%f, %f, %f, %d)"
+                    % (column, frequency, intensity, value, self.serial))
                 self.db.Commit()
+
+    def IsotropyHighFreq(self, freq=None, field=None, dist=0.7, step=5):
+        """Test the isotropy of probe in specific frequency and field
+           intensity.
+
+        ===============   =====================================================
+        **Argument:**
+        freq              Defalt is None. freq should be int or float if not
+                          will raise a assertion error. Unit should be MHz.
+        field             Defalt is None, should be int or float, if not will
+                          raise a assertion error, the unit is V/m.
+        ===============   =====================================================
+        """
+        assert type(freq) is int or type(field) is float
+        assert type(field) is int or type(field) is float
+        column = ("Degree__°, Field__V_per_m, TestSeries")
+        tablename = "全向性_%sMHz_%sV" % (freq, field)
+        self.db.CreateTable(
+            tablename=tablename,
+            columnnamelist=column.split(", "),
+            typelist=["DOUBLE", "DOUBLE", "DOUBLE"])
+        degree = 0
+        times = int(360 / step)
+        sg = SGHigh(self.Highsgaddr, self.rm)
+        pa = PAHigh(self.Highpaaddr, self.rm)
+        pm = PM(self.pmhighaddr, self.rm)
+        ct = CT(self.ctaddr, self.rm)
+        couple = CalHighFreq(freq / 1e3, field, dist)
+        QMessageBox.information(
+            None, "提示", "请连接好电场探头")
+        ct.CTAntennaRoll(couple["Antenna"])
+        powertarget = couple["PowerMeter"]
+        sg_power = self.PowerIter(
+            target=powertarget, freq=freq, sg=sg, pa=pa, pm=pm)
+        value = list(self.ReadValue())
+
+
+    def FreqResHighFreq(self, freq=None, field=None):
+        """Test the frequency response of probe in specific frequency and
+           field intensity.
+
+        ===============   =====================================================
+        **Argument:**
+        freq              Defalt is None. freq should be a list if not will
+                          raise a assertion error. Unit should be MHz.
+        fieldintensity    Defalt is None, should be int or float, if not will
+                          raise a assertion error, the unit is V/m.
+        ===============   =====================================================
+        """
+        column = ("Frequency__MHz, Field__V_per_m, FieldResult__V_per_m,"
+                  " TestSeries")
+        self.db.CreateTable(
+            tablename="场强频率响应",
+            columnnamelist=column.split(", "),
+            typelist=["DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE"])
+        assert type(freq) == list
+        assert type(field) is int or type(field) is float
+        for frequency in freq:
+            value = self.ProbeTestHighFreq(
+                freq=frequency, fieldintensity=field)
+            self.db.cursor.execute(
+                "INSERT INTO  (%s) VALUES (%f, %f, %f, %d)"
+                % (column, frequency, field, value, self.serial))
+            self.db.Commit()
 
     def PowerIter(self, powertarget=None, freq=None,
                   sg=None, pa=None, pm=None, highfreq=True):
@@ -115,15 +188,17 @@ class ProbeTest(object):
             time.sleep(2)
             powercoup = pm.PMFetch()
             powerdiff = powertarget - powercoup
-            if abs(powerdiff < diff_limit):
+            if abs(powerdiff) < diff_limit:
                 break
-            sg_power = sg_power + powerdiff
+            else:
+                sg_power = sg_power + powerdiff
             if sg.SGInRange(sg_power) and sg_power < diff_limit:
                 sg.SGPowerOut(sg_power)
             else:
                 QMessageBox.information(
                     None, "提示", "信号源将要超过限值，程序即将停止")
                 raise ValueError("Wrong power set in signal generator.")
+        return sg_power
 
     def ReadValue(self):
         """Read the value of probe and return the value.

@@ -34,7 +34,7 @@ class FSPrintReport(object):
         """
         self.doc = Word(filename=filename, report=report, language=language)
         self.db = Access("\\TestResult\\DataBase\\" + dbname)
-        self.basicinfo = Access("\\Data\\Test.accdb")
+        self.basicinfo = Access("\\Data\\BasicInfo.accdb")
         if report:
             self.position = "ReportPosition"
         else:
@@ -115,8 +115,8 @@ class FSPrintReport(object):
                     tablenum=tablenum - 1, cellrow=i + 2, cellcolum=j + 1,
                     insertcontent=testdata[i][j])
 
-    def PrintIsotrophy(self, dbname=None):
-        """Print isotrophy."""
+    def PrintIsotropy(self, dbname=None):
+        """Print isotropy."""
         freqname = re.search(r'\d+\.{0,1}\d{0,}(e-\d+)?MHz', dbname).group(0)
         freq = freqname[:-3]
         intensity = re.search(r"\d+V", dbname).group(0)
@@ -176,7 +176,7 @@ class FSPrintReport(object):
         sql = ("SELECT MAX(Field__V_per_m), MIN(Field__V_per_m) FROM %s"
                % dbname)
         [maxdata, mindata] = self.db.cursor.execute(sql).fetchone()
-        isotrophy = 20 * log10(maxdata / (sqrt(maxdata * mindata)))
+        isotropy = 20 * log10(maxdata / (sqrt(maxdata * mindata)))
         self.doc.TableContent(
             tablenum=tablenum, cellrow=1, cellcolum=2,
             insertcontent="%0.2f" % maxdata)
@@ -185,7 +185,7 @@ class FSPrintReport(object):
             insertcontent="%0.2f" % mindata)
         self.doc.TableContent(
             tablenum=tablenum, cellrow=3, cellcolum=2,
-            insertcontent="%0.2f" % isotrophy)
+            insertcontent="%0.2f" % isotropy)
         testdata = list(map(list, zip(*testdata)))
         testdata[1] = list(
             map(lambda x: 20 * log10(x / maxdata), testdata[1]))
@@ -195,7 +195,7 @@ class FSPrintReport(object):
             color="black", linewidth=2)
         plt.xlabel("Angle(°)")
         plt.ylabel("Normalization field strenth(dB)")
-        plt.title("Isotrophy(%s)" % freqname)
+        plt.title("Isotropy(%s)" % freqname)
         plt.xlim(0, 355)
         plt.grid(axis='y')
         plt.savefig(os.getcwd() + '/TestResult/Picture/result.png')
@@ -294,7 +294,7 @@ if __name__ == "__main__":
     a = FSPrintReport(dbname="2016-9-8 ETS.mdb", report=False, language=0)
     a.PrintFieldLinearity()
     a.PrintFrequencyResponse()
-    a.PrintIsotrophy("全向性_1000MHz_20V")
+    a.PrintIsotropy("全向性_1000MHz_20V")
     a.PrintInstrument()
     a.PrintCertNum()
     a.PrintDate()

@@ -185,11 +185,14 @@ class Access(object):
 
 
 if __name__ == "__main__":
-    db = Access("/Data/test.accdb")
-    print(db.CreateSerial())
-    # db.CreateTable("InfoPosition", columnnamelist=["Name",
-    #                "TableNum", "Col", "row"],
-    #                typelist=["VARCHAR(30)", "INT", "INT", "INT"])
+    db = Access("/Data/BasicInfo.accdb")
+    # print(db.CreateSerial())
+    db.CreateTable("FrequencyList", columnnamelist=["NormModeHigh",
+                   "ETSModeHigh", "NormModeLow", "ETSModeLow"],
+                   typelist=["DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE"])
+    a = db.cursor.execute("SELECT NormModeLow FROM FrequencyList").fetchall()
+    a = list(zip(*a))[0]
+    print(a)
     # db.CreateTable("Uncertainty", columnnamelist=["FreqUpper",
     #                "FreqLower", "Uncertainty"],
     #                typelist=["DOUBLE", "DOUBLE", "DOUBLE"])

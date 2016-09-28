@@ -1,9 +1,9 @@
 """docstring..."""
 # -*- coding: utf-8 -*-
-
+from PyQt5.QtCore import QDate
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (QWidget, QGridLayout, QGroupBox, QLabel,
-                             QLineEdit, QPushButton)
+                             QLineEdit, QPushButton, QDateEdit)
 
 
 class CentralBox(QWidget):
@@ -54,7 +54,7 @@ class CentralBox(QWidget):
         self.temperature_lineedit = QLineEdit()    # 温度
         self.humidity_lineedit = QLineEdit()    # 湿度
         self.tester_lineedit = QLineEdit()    # 测试人员
-        self.date_lineedit = QLineEdit()    # 测试日期
+        self.date_lineedit = QDateEdit(QDate.currentDate())    # 测试日期
         self.save_basicinfo_pushbutton = QPushButton("保存基本信息")    # 保存信息
         self.get_serial_num_pushbutton = QPushButton("获取序列号")    # 获取序列号
         line_box = [cert_num_label, self.cert_num_lineedit,

@@ -116,7 +116,7 @@ class FSPrintReport(object):
                     insertcontent=testdata[i][j])
 
     def PrintIsotropy(self, dbname=None):
-        """Print isotropy."""
+        """Print isotrypy."""
         freqname = re.search(r'\d+\.{0,1}\d{0,}(e-\d+)?MHz', dbname).group(0)
         freq = freqname[:-3]
         intensity = re.search(r"\d+V", dbname).group(0)
@@ -176,7 +176,7 @@ class FSPrintReport(object):
         sql = ("SELECT MAX(Field__V_per_m), MIN(Field__V_per_m) FROM %s"
                % dbname)
         [maxdata, mindata] = self.db.cursor.execute(sql).fetchone()
-        isotropy = 20 * log10(maxdata / (sqrt(maxdata * mindata)))
+        isotrypy = 20 * log10(maxdata / (sqrt(maxdata * mindata)))
         self.doc.TableContent(
             tablenum=tablenum, cellrow=1, cellcolum=2,
             insertcontent="%0.2f" % maxdata)
@@ -185,7 +185,7 @@ class FSPrintReport(object):
             insertcontent="%0.2f" % mindata)
         self.doc.TableContent(
             tablenum=tablenum, cellrow=3, cellcolum=2,
-            insertcontent="%0.2f" % isotropy)
+            insertcontent="%0.2f" % isotrypy)
         testdata = list(map(list, zip(*testdata)))
         testdata[1] = list(
             map(lambda x: 20 * log10(x / maxdata), testdata[1]))
@@ -291,7 +291,7 @@ class FSPrintReport(object):
 
 
 if __name__ == "__main__":
-    a = FSPrintReport(dbname="2016-9-8 ETS.mdb", report=False, language=0)
+    a = FSPrintReport(dbname="2016-9-8 ETS.mdb", report=True, language=0)
     a.PrintFieldLinearity()
     a.PrintFrequencyResponse()
     a.PrintIsotropy("全向性_1000MHz_20V")

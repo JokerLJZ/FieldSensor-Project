@@ -187,20 +187,10 @@ class Access(object):
 if __name__ == "__main__":
     db = Access("/Data/BasicInfo.accdb")
     # print(db.CreateSerial())
-    db.CreateTable("FrequencyList", columnnamelist=["NormModeHigh",
-                   "ETSModeHigh", "NormModeLow", "ETSModeLow"],
-                   typelist=["DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE"])
-    a = db.cursor.execute("SELECT NormModeLow FROM FrequencyList").fetchall()
+
+    # db.CreateTable("DefaltCustomInfo", columnnamelist=["NormModeHigh",
+    #                "ETSModeHigh", "NormModeLow", "ETSModeLow"],
+    #                typelist=["DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE"])
+    a = db.cursor.execute("SELECT * FROM Infoname").fetchall()
     a = list(zip(*a))[0]
     print(a)
-    # db.CreateTable("Uncertainty", columnnamelist=["FreqUpper",
-    #                "FreqLower", "Uncertainty"],
-    #                typelist=["DOUBLE", "DOUBLE", "DOUBLE"])
-    # a = db.cursor.execute("SELECT Uncertainty FROM Uncertainty WHERE 1.5 "
-    #                       "BETWEEN FreqLower AND FreqUpper").fetchone()[0]
-    # print(a)
-
-    # print(db.GetTableContent("ETSHorn", "天线型号, 频率下限, 频率上限, VSWR,"
-    #                          "口面宽A, 口面高B, 波导宽a, 波导高b,"
-    #                          "喇叭高度L, 斜高le, 斜高lh, 距离"))
-    # print(db.GetColumnName("ETSHorn"))

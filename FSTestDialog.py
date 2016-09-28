@@ -34,12 +34,16 @@ class FSTestDialog(TestDialog):
         freq_disp_box = self.CreateFreqDispBox()
         freq_mode_box = self.CreateFreqModeBox()
         test_box = self.CreateTestBox()
-        intensity_dist_box = self.CreateIntensityDispBox()
+        intensity_disp_box = self.CreateIntensityDispBox()
+        intens_mode_box = self.CreateIntensityModeBox()
+        isotropy_select_box = self.CreateIsotropySelectBox()
         self.main_layout.addWidget(freq_select_box, 0, 0, 1, 2)
         self.main_layout.addWidget(freq_mode_box, 1, 0, 1, 2)
-        self.main_layout.addWidget(freq_disp_box, 0, 2, 2, 4)
-        self.main_layout.addWidget(intensity_dist_box, 0, 6, 2, 4)
-        self.main_layout.addWidget(test_box, 1, 11, 1, 2)
+        self.main_layout.addWidget(freq_disp_box, 0, 4, 2, 4)
+        self.main_layout.addWidget(intensity_disp_box, 0, 8, 2, 4)
+        self.main_layout.addWidget(isotropy_select_box, 0, 2, 1, 2)
+        self.main_layout.addWidget(intens_mode_box, 1, 2, 1, 2)
+        self.main_layout.addWidget(test_box, 1, 12, 1, 2)
         self.setLayout(self.main_layout)
 
     def CreateTestBox(self):
@@ -47,13 +51,16 @@ class FSTestDialog(TestDialog):
         self.start_test_button = QPushButton("开始测试")
         self.pause_test_button = QPushButton("暂停测试")
         self.stop_test_button = QPushButton("停止测试")
+        self.start_test_button.clicked.connect(self.StartTest)
+        self.stop_test_button.clicked.connect(self.StopTest)
+        self.start_test_button.setEnabled(True)
+        self.stop_test_button.setEnabled(False)
         test_box_layout = QVBoxLayout()
         test_box_layout.addWidget(self.start_test_button)
         test_box_layout.addWidget(self.pause_test_button)
         test_box_layout.addWidget(self.stop_test_button)
         test_box = QGroupBox()
         test_box.setLayout(test_box_layout)
-        # test_box.setMaximumWidth(100)
         return test_box
 
     def CreateFreqSelectBox(self):
@@ -62,10 +69,13 @@ class FSTestDialog(TestDialog):
         self.low_freq_radiobutton = QRadioButton("10MHz-1GHz", self)
         self.high_freq_radiobutton.setChecked(True)
         self.high_freq_radiobutton.clicked.connect(
-            lambda *args: self.NormMode())
+            lambda *args: self.FreqSelMode())
         self.low_freq_radiobutton.clicked.connect(
-            lambda *args: self.NormMode())
-
+            lambda *args: self.FreqSelMode())
+        self.high_freq_radiobutton.clicked.connect(
+            lambda *args: self.IntensSelMode())
+        self.low_freq_radiobutton.clicked.connect(
+            lambda *args: self.IntensSelMode())
         freq_select_layout = QVBoxLayout()
         freq_select_layout.addWidget(self.high_freq_radiobutton)
         freq_select_layout.addWidget(self.low_freq_radiobutton)
@@ -75,21 +85,86 @@ class FSTestDialog(TestDialog):
 
         return freq_select_box
 
+    def CreateIsotropySelectBox(self):
+        self.isotropy_false_radiobutton = QRadioButton("非全向性测试", self)
+        self.isotropy_true_radiobutton = QRadioButton("全向性测试", self)
+        self.isotropy_false_radiobutton.setChecked(True)
+        self.isotropy_true_radiobutton.clicked.connect(
+            self.SelectIsotropy)
+        self.isotropy_false_radiobutton.clicked.connect(
+            self.UnSelectedIsotropy)
+        isotropy_select_layout = QVBoxLayout()
+        isotropy_select_layout.addWidget(self.isotropy_false_radiobutton)
+        isotropy_select_layout.addWidget(self.isotropy_true_radiobutton)
+        isotropy_select_box = QGroupBox("全向性测试")
+        isotropy_select_box.setMaximumWidth(110)
+        isotropy_select_box.setLayout(isotropy_select_layout)
+
+        return isotropy_select_box
+
+    def SelectIsotropy(self):
+        self.freq_norm_mode.setEnabled(False)
+        self.freq_ets_mode.setEnabled(False)
+        self.freq_opt_mode.setEnabled(False)
+        self.low_freq_radiobutton.disconnect()
+        self.low_freq_radiobutton.clicked.connect(self.SetIsotropy)
+        self.high_freq_radiobutton.disconnect()
+        self.high_freq_radiobutton.clicked.connect(self.SetIsotropy)
+        self.intens_freres_mode.setEnabled(False)
+        self.intens_linear_mode.setEnabled(False)
+        self.intens_opt_mode.setEnabled(False)
+        for obj in self.freq_lineedit_box:
+            obj.clear()
+            obj.setEnabled(False)
+        self.freq_lineedit_box[0].setEnabled(True)
+        for obj in self.intensity_lineedit_box:
+            obj.clear()
+            obj.setEnabled(False)
+        self.intensity_lineedit_box[0].setEnabled(True)
+        self.SetIsotropy()
+
+    def SetIsotropy(self):
+        if self.high_freq_radiobutton.isChecked():
+            self.freq_lineedit_box[0].setText("1000")
+        elif self.low_freq_radiobutton.isChecked():
+            self.freq_lineedit_box[0].setText("800")
+        self.intensity_lineedit_box[0].setText("20")
+
+    def UnSelectedIsotropy(self):
+        self.freq_norm_mode.setEnabled(True)
+        self.freq_ets_mode.setEnabled(True)
+        self.freq_opt_mode.setEnabled(True)
+        self.low_freq_radiobutton.disconnect()
+        self.low_freq_radiobutton.clicked.connect(self.FreqSelMode)
+        self.low_freq_radiobutton.clicked.connect(self.IntensSelMode)
+        self.high_freq_radiobutton.disconnect()
+        self.high_freq_radiobutton.clicked.connect(self.FreqSelMode)
+        self.high_freq_radiobutton.clicked.connect(self.IntensSelMode)
+        self.intens_freres_mode.setEnabled(True)
+        self.intens_linear_mode.setEnabled(True)
+        self.intens_opt_mode.setEnabled(True)
+        for obj in self.freq_lineedit_box:
+            obj.setEnabled(True)
+        for obj in self.intensity_lineedit_box:
+            obj.setEnabled(True)
+        self.FreqSelMode()
+        self.IntensSelMode()
+
     def CreateFreqModeBox(self):
         """CreateFreqModeBox."""
-        self.freq_NormMode = QRadioButton("常规频点")
+        self.freq_norm_mode = QRadioButton("常规频点")
         self.freq_ets_mode = QRadioButton("ETS定制频点")
         self.freq_opt_mode = QRadioButton("自定义频点")
-        self.freq_NormMode.setChecked(True)
-        self.freq_NormMode.clicked.connect(
-            lambda *args: self.NormMode())
+        self.freq_norm_mode.setChecked(True)
+        self.freq_norm_mode.clicked.connect(
+            lambda *args: self.FreqSelMode())
         self.freq_ets_mode.clicked.connect(
-            lambda *args: self.NormMode())
+            lambda *args: self.FreqSelMode())
         self.freq_opt_mode.clicked.connect(
-            lambda *args: self.NormMode())
+            lambda *args: self.FreqSelMode())
 
         freq_mode_layout = QVBoxLayout()
-        freq_mode_layout.addWidget(self.freq_NormMode)
+        freq_mode_layout.addWidget(self.freq_norm_mode)
         freq_mode_layout.addWidget(self.freq_ets_mode)
         freq_mode_layout.addWidget(self.freq_opt_mode)
         freq_mode_box = QGroupBox("频点设置")
@@ -97,6 +172,28 @@ class FSTestDialog(TestDialog):
         freq_mode_box.setLayout(freq_mode_layout)
 
         return freq_mode_box
+
+    def CreateIntensityModeBox(self):
+        """CreateFreqModeBox."""
+        self.intens_linear_mode = QRadioButton("线性度场强")
+        self.intens_freres_mode = QRadioButton("频率响应场强")
+        self.intens_opt_mode = QRadioButton("自定义场强")
+        self.intens_linear_mode.setChecked(True)
+        self.intens_linear_mode.clicked.connect(
+            lambda *args: self.IntensSelMode())
+        self.intens_freres_mode.clicked.connect(
+            lambda *args: self.IntensSelMode())
+        self.intens_opt_mode.clicked.connect(
+            lambda *args: self.IntensSelMode())
+        intens_mode_layout = QVBoxLayout()
+        intens_mode_layout.addWidget(self.intens_linear_mode)
+        intens_mode_layout.addWidget(self.intens_freres_mode)
+        intens_mode_layout.addWidget(self.intens_opt_mode)
+        intens_mode_box = QGroupBox("场强设置")
+        intens_mode_box.setMaximumWidth(110)
+        intens_mode_box.setLayout(intens_mode_layout)
+
+        return intens_mode_box
 
     def CreateFreqDispBox(self):
         """Create the frequency display lineedit groupbox."""
@@ -174,21 +271,14 @@ class FSTestDialog(TestDialog):
             QLabel("场强" + str(i)) for i in range(1, 15)]
         for i in intensity_label_seq:
             intensity_disp_layout.addWidget(i, intensity_label_seq.index(i), 0)
+        intensity_lineedit1.setText("10")
+        intensity_lineedit2.setText("20")
         return intensity_disp_box
 
-    def NormMode(self):
-        """NormMode docstring.
-
-           ==============   ============================================
-           **Argument:**
-           freq_sel:        default is True
-                            when set True frequency list is 1GHz-18GHz
-                            when set False frequency list is 10MHz-1GHz
-           ==============   ============================================
-
-        """
+    def FreqSelMode(self):
+        """FreqSelMode set a frequency box status."""
         mode_checkbox = [
-            self.freq_NormMode.isChecked(),
+            self.freq_norm_mode.isChecked(),
             self.freq_ets_mode.isChecked(),
             self.freq_opt_mode.isChecked()]
         freq_checkbox = [
@@ -219,3 +309,53 @@ class FSTestDialog(TestDialog):
                 self.freq_lineedit_box[i].clear()
         for i in range(len(frequency_list), len(self.freq_lineedit_box)):
             self.freq_lineedit_box[i].clear()
+
+    def IntensSelMode(self):
+        """InrensSelMode set a intensity box status."""
+        mode_checkbox = [
+            self.intens_linear_mode.isChecked(),
+            self.intens_freres_mode.isChecked(),
+            self.intens_opt_mode.isChecked()]
+        intens_checkbox = [
+            self.high_freq_radiobutton.isChecked(),
+            self.low_freq_radiobutton.isChecked()]
+        if mode_checkbox[0] and intens_checkbox[0]:
+            sql = "SELECT LinearModeHigh FROM IntensityList"
+            intensity_list = self.basicinfo.cursor.execute(sql).fetchall()
+            intensity_list = list(zip(*intensity_list))[0]
+        elif mode_checkbox[0] and intens_checkbox[1]:
+            sql = "SELECT LinearModeLow FROM IntensityList"
+            intensity_list = self.basicinfo.cursor.execute(sql).fetchall()
+            intensity_list = list(zip(*intensity_list))[0]
+        elif mode_checkbox[1] and intens_checkbox[0]:
+            sql = "SELECT FreqResModeHigh FROM IntensityList"
+            intensity_list = self.basicinfo.cursor.execute(sql).fetchall()
+            intensity_list = list(zip(*intensity_list))[0]
+        elif mode_checkbox[1] and intens_checkbox[1]:
+            sql = "SELECT FreqResModeLow FROM IntensityList"
+            intensity_list = self.basicinfo.cursor.execute(sql).fetchall()
+            intensity_list = list(zip(*intensity_list))[0]
+        else:
+            intensity_list = [None]
+        for i in range(len(intensity_list)):
+            if intensity_list[i] is not None:
+                self.intensity_lineedit_box[i].setText(str(intensity_list[i]))
+            else:
+                self.intensity_lineedit_box[i].clear()
+        for i in range(len(intensity_list), len(self.intensity_lineedit_box)):
+            self.intensity_lineedit_box[i].clear()
+
+    def StartTest(self):
+        intensity = [
+            obj.text() for obj in self.intensity_lineedit_box
+            if obj.text().__len__() > 0]
+        frequency = [
+            obj.text() for obj in self.freq_lineedit_box
+            if obj.text().__len__() > 0]
+        self.start_test_button.setEnabled(False)
+        self.stop_test_button.setEnabled(True)
+        print(intensity, frequency)
+
+    def StopTest(self):
+        self.start_test_button.setEnabled(True)
+        self.stop_test_button.setEnabled(False)

@@ -15,7 +15,7 @@ class TestDialog(QDialog):
         self.setWindowTitle("测试程序")
         self.setWindowIcon(QIcon("images/WindowIcon.png"))
         self.setAutoFillBackground(True)
-        pic = "images/Back3.jpeg"
+        pic = "images/Back2.jpg"
         background_pic = QPixmap(pic)
         palette = QPalette()
         palette.setBrush(QPalette.Background, QBrush(background_pic))

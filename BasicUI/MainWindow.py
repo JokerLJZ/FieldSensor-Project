@@ -27,10 +27,10 @@ class MainWindow(QMainWindow):
         self.setting_dialog = setting_dialog
         self.printing_dialog = print_dialog
         self.test_dialog = test_dialog
-        self.init_mainwindow()
+        self.CreateMainWindow()
 
-    def init_mainwindow(self):
-        """init_mainwindow string."""
+    def CreateMainWindow(self):
+        """CreateMainWindow string."""
         self.setWindowTitle("Main Window")
         self.setWindowIcon(QIcon("images/WindowIcon.png"))
         self.setAutoFillBackground(True)
@@ -42,11 +42,11 @@ class MainWindow(QMainWindow):
         # self.setMinimumHeight(771)
         self.setPalette(palette)
         self.statusBar()
-        self.create_menu()
-        self.create_central_widget()
+        self.CreateMenu()
+        self.CreateCentralWidget()
 
-    def create_menu(self):
-        """create_menu string."""
+    def CreateMenu(self):
+        """CreateMenu string."""
         self.file_menu = self.menuBar().addMenu("文件")
 
         self.setting_menu = self.menuBar().addMenu("设置")
@@ -68,8 +68,8 @@ class MainWindow(QMainWindow):
 
         self.central_box.start_test_pushbutton.clicked.connect(self.start)
 
-    def create_central_widget(self):
-        """create_central_widget string."""
+    def CreateCentralWidget(self):
+        """CreateCentralWidget string."""
         self.setCentralWidget(self.central_box)
 
     def start(self):

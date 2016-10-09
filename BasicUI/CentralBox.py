@@ -3,7 +3,7 @@
 from PyQt5.QtCore import QDate
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (QWidget, QGridLayout, QGroupBox, QLabel,
-                             QLineEdit, QPushButton, QDateEdit)
+                             QLineEdit, QPushButton, QDateEdit, QVBoxLayout)
 
 
 class CentralBox(QWidget):
@@ -21,6 +21,7 @@ class CentralBox(QWidget):
         self.create_enter_test()
         self.setLayout(self.main_layout)
         self.stretch_set()
+        self.CreateInfoBox()
 
     def create_enter_test(self):
         """create_enter_test docstring."""
@@ -28,6 +29,14 @@ class CentralBox(QWidget):
         self.start_test_pushbutton.resize(6, 6)
         self.start_test_pushbutton.setFont(QFont("黑体", 30, QFont.Bold))
         self.main_layout.addWidget(self.start_test_pushbutton, 9, 5, 3, 3)
+
+    def CreateInfoBox(self):
+        """CreateTestBox docstring."""
+        info_layout = QVBoxLayout()
+        info_box = QGroupBox("客户信息")
+        info_box.setMaximumWidth(110)
+        info_box.setLayout(info_layout)
+        self.main_layout.addWidget(info_box, 0, 5, 4, 3)
 
     def create_widget(self):
         """create_widget docstring."""

@@ -137,6 +137,8 @@ if __name__ == "__main__":
     # word.TableAddRow(2, 10)
     # word.CellDownMerge(2, 2, 1, 1)
     word.InsertHeader()
+    sel = word.doc.Tables(1).Cell(1, 1).Range.Select()
+    word.doc.Application.Selection.MoveLeft(1)
     # sel = word.doc.Tables(2).Cell(2, 1).Select()
     # word.doc.Application.Selection.MoveDown(5, 1, 1)
     # word.doc.Application.Selection.Cells.Merge()

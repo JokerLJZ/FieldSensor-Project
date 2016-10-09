@@ -7,7 +7,6 @@ You could read the sorce code of this programme.
 Commercial use was not allowed.
 """
 # -*- coding: utf-8 -*-
-import time
 from BasicUI.MainWindow import MainWindow
 from FSCentralBox import FSCentralBox
 from FSSettingDialog import FSSettingDialog
@@ -23,10 +22,12 @@ class FSMainWindow(MainWindow):
 
     def __init__(self):
         """docstring."""
+
         self.setting_dialog = FSSettingDialog()
         self.print_dialog = FSPrintDialog()
         self.central_box = FSCentralBox()
         self.test_dialog = FSTestDialog()
+
         super(FSMainWindow, self).__init__(
             setting_dialog=self.setting_dialog,
             print_dialog=self.print_dialog,
@@ -48,7 +49,8 @@ class FSMainWindow(MainWindow):
         self.dbname = cert_num + device_serial + custom_name
         db = Access("TestResult\\DataBase\\%s.accdb" % self.dbname)
         basicdb = Access("Data\\BasicInfo.accdb")
-        namelist = basicdb.cursor.execute("SELECT * FROM Infoname").fetchall()
+        namelist = basicdb.cursor.execute(
+            "SELECT * FROM Infoname").fetchall()
         namelist = list(zip(*namelist))[0]
         db.CreateTable(
             tablename="TestInfo", columnnamelist=namelist,

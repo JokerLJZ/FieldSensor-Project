@@ -10,8 +10,10 @@ Commercial use was not allowed.
 
 from PyQt5.QtCore import QDate
 from BasicUI.CentralBox import CentralBox
-from PyQt5.QtWidgets import (QLabel, QLineEdit, QPushButton,
-                             QGridLayout, QGroupBox, QDateEdit)
+from PyQt5.QtWidgets import (QLabel, QLineEdit, QPushButton, QRadioButton,
+                             QVBoxLayout, QGridLayout, QGroupBox, QDateEdit,
+                             QGridLayout)
+from Access import Access
 __author__ = "Joker.Liu"
 
 
@@ -21,6 +23,41 @@ class FSCentralBox(CentralBox):
     def __init__(self):
         """__init__ docstring."""
         super(FSCentralBox, self).__init__()
+
+        self.DefaltInfo()
+
+    def CreateInfoBox(self):
+        """CreateTestBox docstring."""
+        self.defalt_info_radiobutton = QRadioButton("Defalt", self)
+        self.ets_info_radiobutton = QRadioButton("ETS", self)
+        self.safety_info_radiobutton = QRadioButton("Safety", self)
+        self.defalt_info_radiobutton.setChecked(True)
+        info_layout = QVBoxLayout()
+        info_layout.addWidget(self.defalt_info_radiobutton)
+        info_layout.addWidget(self.ets_info_radiobutton)
+        info_layout.addWidget(self.safety_info_radiobutton)
+        info_box = QGroupBox("客户信息")
+        info_box.setMaximumWidth(150)
+        info_box.setLayout(info_layout)
+        self.main_layout.addWidget(info_box, 0, 5, 6, 4)
+        return info_box
+
+    def DefaltInfo(self):
+        sql = ("SELECT 证书编号, 客户地址, 客户名称, 设备名称, 电源电压, 校准地点"
+               " FROM DefaltInfo WHERE 客户标识='Defalt'")
+        basicdb = Access("Data\\BasicInfo.accdb")
+        info = basicdb.cursor.execute(sql).fetchone()
+        self.cert_num_lineedit.setText(info[0])
+        self.custom_addr_lineedit.setText(info[1])
+        self.custom_name_lineedit.setText(info[2])
+        self.device_name_lineedit.setText(info[3])
+        self.power_voltage_lineedit.setText(info[4])
+        self.cal_addr_lineedit.setText(info[5])
+
+    def InfoSelect(self):
+        # if
+        sql = ("SELECT 证书编号, 客户地址, 客户名称, 设备名称, 电源电压, 校准地点"
+               " FROM DefaltInfo WHERE 客户标识='Defalt'")
 
     def create_widget(self):
         """create_widget docstring."""
@@ -36,6 +73,7 @@ class FSCentralBox(CentralBox):
         humidity_high_label = QLabel("湿度高频")
         temperature_low_label = QLabel("温度低频")
         humidity_low_label = QLabel("湿度低频")
+        power_voltage_label = QLabel("电源电压")
         tester_label = QLabel("测试人员")
         date_label = QLabel("测试日期")
         self.cert_num_lineedit = QLineEdit()  # 证书编号
@@ -50,6 +88,7 @@ class FSCentralBox(CentralBox):
         self.humidity_high_lineedit = QLineEdit()    # 湿度
         self.temperature_low_lineedit = QLineEdit()    # 温度
         self.humidity_low_lineedit = QLineEdit()    # 湿度
+        self.power_voltage_lineedit = QLineEdit()    # 电源电压
         self.tester_lineedit = QLineEdit()    # 测试人员
         self.date_lineedit = QDateEdit(QDate.currentDate())    # 测试日期
         self.save_basicinfo_pushbutton = QPushButton("保存基本信息")    # 保存信息
@@ -66,6 +105,7 @@ class FSCentralBox(CentralBox):
                     humidity_high_label, self.humidity_high_lineedit,
                     temperature_low_label, self.temperature_low_lineedit,
                     humidity_low_label, self.humidity_low_lineedit,
+                    power_voltage_label, self.power_voltage_lineedit,
                     tester_label, self.tester_lineedit,
                     date_label, self.date_lineedit]
         widget_box = QGroupBox()

@@ -5,6 +5,7 @@ import re
 from math import log10, sqrt
 
 import matplotlib.pyplot as plt
+from matplotlib.font_manager import *
 
 from Access import Access
 from Word import Word
@@ -116,9 +117,17 @@ class FSPrintReport(object):
                     insertcontent=testdata[i][j])
 
     def PrintIsotropy(self, dbname=None):
-        """Print isotrypy."""
-        freqname = re.search(r'\d+\.{0,1}\d{0,}(e-\d+)?MHz', dbname).group(0)
-        freq = freqname[:-3]
+        """Print isotropy."""
+        title = re.search(r'\d+\.{0,1}\d{0,}(e-\d+)?MHz', dbname).group(0)
+        freq = title[:-3]
+        if float(freq) >= 1000:
+            freqprint = float(freq) / 1000
+            if float(freq) % 1000 == 0:
+                title = "%dGHz" % freqprint
+            else:
+                title = "%sGHz" % float(freqprint)
+        else:
+            title = "%sMHz" % freqprint
         intensity = re.search(r"\d+V", dbname).group(0)
         sql = "SELECT MAX(TestSeriesNo), MIN(TestSeriesNo) FROM %s" % dbname
         serial = self.db.cursor.execute(sql).fetchone()
@@ -135,14 +144,14 @@ class FSPrintReport(object):
         if self.report is not True or self.language == 0:
             self.doc.TableContent(
                 tablenum=tablenum - 1, cellrow=1, cellcolum=1,
-                insertcontent="%s各向同性" % freqname)
+                insertcontent="%s各向同性" % title)
             self.doc.TableContent(
                 tablenum=tablenum - 1, cellrow=2, cellcolum=1,
                 insertcontent="场强值%s/m" % intensity)
         elif self.language == 1:
             self.doc.TableContent(
                 tablenum=tablenum - 1, cellrow=1, cellcolum=1,
-                insertcontent="Isotropy at %s" % freqname)
+                insertcontent="Isotropy at %s" % title)
             self.doc.TableContent(
                 tablenum=tablenum - 1, cellrow=2, cellcolum=1,
                 insertcontent="Field Strength %s/m" % intensity)
@@ -153,11 +162,21 @@ class FSPrintReport(object):
         uncertainty = self.basicinfo.cursor.execute(sql).fetchone()[0]
         if self.report is False or self.language == 0:
             uncertsentense = "测量结果的不确定度"
+
         else:
             uncertsentense = "Measurement uncertainty"
         self.doc.TableContent(tablenum=tablenum - 1, cellrow=23, cellcolum=1,
                               insertcontent="%s (k=2): %0.1f dB"
                               % (uncertsentense, uncertainty))
+        index = len(uncertsentense) + 2
+        cel = self.doc.doc.Tables(
+            tablenum).Cell(23, 1)
+        cel.Range.Select()
+        selection = self.doc.doc.Application.Selection
+        selection.MoveLeft(1, 1)
+        selection.MoveRight(1, index)
+        selection.MoveRight(1, 1, 1)
+        selection.Font.Italic = True
         # 打印数据
         for i in range(19):
             self.doc.TableContent(
@@ -176,7 +195,7 @@ class FSPrintReport(object):
         sql = ("SELECT MAX(Field__V_per_m), MIN(Field__V_per_m) FROM %s"
                % dbname)
         [maxdata, mindata] = self.db.cursor.execute(sql).fetchone()
-        isotrypy = 20 * log10(maxdata / (sqrt(maxdata * mindata)))
+        isotropy = 20 * log10(maxdata / (sqrt(maxdata * mindata)))
         self.doc.TableContent(
             tablenum=tablenum, cellrow=1, cellcolum=2,
             insertcontent="%0.2f" % maxdata)
@@ -185,7 +204,7 @@ class FSPrintReport(object):
             insertcontent="%0.2f" % mindata)
         self.doc.TableContent(
             tablenum=tablenum, cellrow=3, cellcolum=2,
-            insertcontent="%0.2f" % isotrypy)
+            insertcontent="%0.2f" % isotropy)
         testdata = list(map(list, zip(*testdata)))
         testdata[1] = list(
             map(lambda x: 20 * log10(x / maxdata), testdata[1]))
@@ -193,9 +212,16 @@ class FSPrintReport(object):
         plt.plot(
             testdata[0], testdata[1],
             color="black", linewidth=2)
-        plt.xlabel("Angle(°)")
-        plt.ylabel("Normalization field strenth(dB)")
-        plt.title("Isotropy(%s)" % freqname)
+        if self.language == 1:
+            plt.xlabel("Angle(°)")
+            plt.ylabel("Normalization field strenth(dB)")
+            plt.title("Isotropy(%s)" % title)
+        elif self.language == 0:
+            font = FontProperties(
+                fname="C:/Windows/Fonts/msyh.ttc")
+            plt.xlabel(u"角度(°)", fontproperties=font)
+            plt.ylabel(u"归一化场强(dB)", fontproperties=font)
+            plt.title(u"各向同性(%s)" % title, fontproperties=font)
         plt.xlim(0, 355)
         plt.grid(axis='y')
         plt.savefig(os.getcwd() + '/TestResult/Picture/result.png')
@@ -268,6 +294,7 @@ class FSPrintReport(object):
                     self.doc.TableContent(
                         tablenum=tablenum, cellrow=i + 2, cellcolum=j + 2,
                         insertcontent=testdata[i][j])
+
         elif self.language == 0:
             sql = ("SELECT Instrument, Uncertainty, Certificate, DueDate"
                    " FROM InstrumentCn")
@@ -278,6 +305,16 @@ class FSPrintReport(object):
                     self.doc.TableContent(
                         tablenum=tablenum, cellrow=i + 5, cellcolum=j + 1,
                         insertcontent=testdata[i][j])
+                    if "k" in testdata[i][j]:
+                        index = testdata[i][j].index('k')
+                        cel = self.doc.doc.Tables(
+                            tablenum + 1).Cell(i + 5, j + 1)
+                        cel.Range.Select()
+                        selection = self.doc.doc.Application.Selection
+                        selection.MoveLeft(1, 1)
+                        selection.MoveRight(1, index)
+                        selection.MoveRight(1, 1, 1)
+                        selection.Font.Italic = True
         elif self.language == 1:
             sql = ("SELECT Instrument, Uncertainty, Certificate, DueDate"
                    " FROM InstrumentEn")
@@ -288,14 +325,24 @@ class FSPrintReport(object):
                     self.doc.TableContent(
                         tablenum=tablenum, cellrow=i + 5, cellcolum=j + 1,
                         insertcontent=testdata[i][j])
+                    if "k" in testdata[i][j]:
+                        index = testdata[i][j].index('k')
+                        cel = self.doc.doc.Tables(
+                            tablenum + 1).Cell(i + 5, j + 1)
+                        cel.Range.Select()
+                        selection = self.doc.doc.Application.Selection
+                        selection.MoveLeft(1, 1)
+                        selection.MoveRight(1, index)
+                        selection.MoveRight(1, 1, 1)
+                        selection.Font.Italic = True
 
 
 if __name__ == "__main__":
-    a = FSPrintReport(dbname="2016-9-8 ETS.mdb", report=True, language=0)
-    a.PrintFieldLinearity()
-    a.PrintFrequencyResponse()
+    a = FSPrintReport(dbname="2016-9-8 ETS.mdb", report=True, language=1)
+    # a.PrintFieldLinearity()
+    # a.PrintFrequencyResponse()
     a.PrintIsotropy("全向性_1000MHz_20V")
     a.PrintInstrument()
-    a.PrintCertNum()
-    a.PrintDate()
+    # a.PrintCertNum()
+    # a.PrintDate()
     # a.doc.DocSave()

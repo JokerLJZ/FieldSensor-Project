@@ -84,7 +84,6 @@ class Access(object):
             raise ValueError("No tablename input, please check the input.")
         else:
             print("Table has already in the database.")
-
         if columnnamelist is None:
             print("No table name would be create.")
             return False

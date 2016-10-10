@@ -7,7 +7,7 @@ You could read the sorce code of this programme.
 Commercial use was not allowed.
 """
 # -*- coding: utf-8 -*-
-from BasicUI.MainWindow import MainWindow
+from BasicMainWindow import MainWindow
 from FSCentralBox import FSCentralBox
 from FSSettingDialog import FSSettingDialog
 from FSPrintDialog import FSPrintDialog

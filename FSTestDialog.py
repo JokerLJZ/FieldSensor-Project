@@ -9,7 +9,7 @@ Commercial use was not allowed.
 
 from PyQt5.QtWidgets import (QRadioButton, QGridLayout, QGroupBox, QLineEdit,
                              QVBoxLayout, QLabel, QPushButton)
-from BasicUI.TestDialog import TestDialog
+from BasicTestDialog import TestDialog
 from Access import Access
 __author__ = "Joker.Liu"
 

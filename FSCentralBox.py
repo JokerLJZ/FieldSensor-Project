@@ -9,10 +9,10 @@ Commercial use was not allowed.
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtCore import QDate
-from BasicUI.CentralBox import CentralBox
+from BasicCentralBox import CentralBox
 from PyQt5.QtWidgets import (QLabel, QLineEdit, QPushButton, QRadioButton,
                              QVBoxLayout, QGridLayout, QGroupBox, QDateEdit,
-                             QGridLayout)
+                             )
 from Access import Access
 __author__ = "Joker.Liu"
 

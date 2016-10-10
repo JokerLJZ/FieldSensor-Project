@@ -7,7 +7,7 @@ You could read the sorce code of this programme.
 Commercial use was not allowed.
 """
 # -*- coding: utf-8 -*-
-from BasicUI.SettingDialog import SettingDialog
+from BasicSettingDialog import SettingDialog
 __author__ = "Joker.Liu"
 
 

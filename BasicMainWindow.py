@@ -4,6 +4,7 @@
 
 from PyQt5.QtGui import QIcon, QPixmap, QPalette, QBrush
 from PyQt5.QtWidgets import (QAction, QApplication, QMainWindow, QMessageBox)
+from Access import Access
 
 
 class MainWindow(QMainWindow):
@@ -38,8 +39,6 @@ class MainWindow(QMainWindow):
         background_pic = QPixmap(pic)
         palette = QPalette()
         palette.setBrush(QPalette.Background, QBrush(background_pic))
-        # self.setMinimumWidth(999)
-        # self.setMinimumHeight(771)
         self.setPalette(palette)
         self.statusBar()
         self.CreateMenu()
@@ -72,11 +71,51 @@ class MainWindow(QMainWindow):
         """CreateCentralWidget string."""
         self.setCentralWidget(self.central_box)
 
+    def CreateDb(self):
+        cert_num = self.central_box.cert_num_lineedit.text() + "_"
+        device_serial = self.central_box.device_serial_lineedit.text() + "_"
+        custom_name = self.central_box.custom_name_lineedit.text()
+        datetime = (
+            self.central_box.date_lineedit.dateTime().toString(
+                "#yyyy-MM-dd HH:MM:ss#"))
+        self.dbname = cert_num + device_serial + custom_name
+        db = Access("TestResult\\DataBase\\%s.accdb" % self.dbname)
+        basicdb = Access("Data\\BasicInfo.accdb")
+        db.CreateSerial(datetime)
+        namelist = basicdb.cursor.execute(
+            "SELECT * FROM Infoname").fetchall()
+        try:
+            basicdb.Close()
+        except:
+            pass
+        namelist = list(zip(*namelist))[0]
+        db.CreateTable(
+            tablename="TestInfo", columnnamelist=namelist,
+            typelist=(["VARCHAR 30"] * namelist.__len__()))
+        self.InsertDbInfo(db=db)
+
+    def InsertDbInfo(self, db=None):
+        basicdb = Access("/Data/BasicInfo.accdb")
+        infolist = basicdb.cursor.execute(
+            "SELECT Name FROM InfoName").fetchall()
+        infolist = tuple(zip(*infolist))[0]
+        lineeditlist = [
+            obj.text() for obj in self.central_box.linebox[1::2]]
+        lineeditlist.pop(len(lineeditlist) - 1)
+        lineedit = str(lineeditlist)[2:len(lineeditlist) - 2]
+        print(lineeditlist)
+        # columnname = str(lineeditlist)[1: len]
+        # if not db.IsTableContentExist("TestInfo"):
+        db.cursor.execute(
+            "INSERT INTO TestInfo VALUES (%s)" % lineeditlist)
+        db.Commit()
+
     def start(self):
         """start docstring."""
         self.central_box.start_test_pushbutton.setEnabled(False)
         self.test_dialog.closeEvent = self.close_event
         self.test_dialog.show()
+        self.CreateDb()
 
     def close_event(self, event):
         """close_event docstring."""
@@ -110,9 +149,10 @@ if __name__ == '__main__':
     print_dialog = PrintDialog()
     central_box = CentralBox()
     test_dialog = TestDialog()
-    mainWin = MainWindow(setting_dialog=setting_dialog,
-                         print_dialog=print_dialog,
-                         central_box=central_box,
-                         test_dialog=test_dialog)
+    mainWin = MainWindow(
+        setting_dialog=setting_dialog,
+        print_dialog=print_dialog,
+        central_box=central_box,
+        test_dialog=test_dialog)
     mainWin.show()
     sys.exit(app.exec_())

@@ -1,9 +1,10 @@
 """docstring..."""
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import QDate
+from PyQt5.QtCore import QDateTime, QTime
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import (QWidget, QGridLayout, QGroupBox, QLabel,
-                             QLineEdit, QPushButton, QDateEdit, QVBoxLayout)
+from PyQt5.QtWidgets import (
+    QWidget, QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton,
+    QDateTimeEdit, QVBoxLayout)
 
 
 class CentralBox(QWidget):
@@ -17,7 +18,7 @@ class CentralBox(QWidget):
     def init_box(self):
         """init_box docstring."""
         self.main_layout = QGridLayout()
-        self.create_widget()
+        self.linebox = self.create_widget()
         self.create_enter_test()
         self.setLayout(self.main_layout)
         self.stretch_set()
@@ -27,8 +28,10 @@ class CentralBox(QWidget):
         """create_enter_test docstring."""
         self.start_test_pushbutton = QPushButton("开始测试")    # 开始测试
         self.start_test_pushbutton.resize(6, 6)
-        self.start_test_pushbutton.setFont(QFont("黑体", 30, QFont.Bold))
-        self.main_layout.addWidget(self.start_test_pushbutton, 9, 5, 3, 3)
+        self.start_test_pushbutton.setFont(
+            QFont("黑体", 30, QFont.Bold))
+        self.main_layout.addWidget(
+            self.start_test_pushbutton, 9, 5, 3, 3)
 
     def CreateInfoBox(self):
         """CreateTestBox docstring."""
@@ -51,6 +54,7 @@ class CentralBox(QWidget):
         temperature_label = QLabel("温    度")
         humidity_label = QLabel("湿    度")
         tester_label = QLabel("测试人员")
+        verifier_label = QLabel("核验人员")
         date_label = QLabel("测试日期")
         self.cert_num_lineedit = QLineEdit()  # 证书编号
         self.device_serial_lineedit = QLineEdit()  # 设备序号
@@ -63,39 +67,46 @@ class CentralBox(QWidget):
         self.temperature_lineedit = QLineEdit()    # 温度
         self.humidity_lineedit = QLineEdit()    # 湿度
         self.tester_lineedit = QLineEdit()    # 测试人员
-        self.date_lineedit = QDateEdit(QDate.currentDate())    # 测试日期
-        self.save_basicinfo_pushbutton = QPushButton("保存基本信息")    # 保存信息
-        self.get_serial_num_pushbutton = QPushButton("获取序列号")    # 获取序列号
-        line_box = [cert_num_label, self.cert_num_lineedit,
-                    manufacturer_label, self.manufacturer_lineedit,
-                    device_name_label, self.device_name_lineedit,
-                    device_type_label, self.device_type_lineedit,
-                    device_serial_label, self.device_serial_lineedit,
-                    custom_addr_label, self.custom_addr_lineedit,
-                    custom_name_label, self.custom_name_lineedit,
-                    cal_addr_label, self.cal_addr_lineedit,
-                    temperature_label, self.temperature_lineedit,
-                    humidity_label, self.humidity_lineedit,
-                    tester_label, self.tester_lineedit,
-                    date_label, self.date_lineedit]
+        self.verifier_lineedit = QLineEdit()    # 核验人员
+        self.date_lineedit = QDateTimeEdit(
+            QDateTime.currentDateTime())    # 测试日期
+        self.save_basicinfo_pushbutton = QPushButton("保存基本信息")
+        self.get_serial_num_pushbutton = QPushButton("获取序列号")
+        line_box = [
+            cert_num_label, self.cert_num_lineedit,
+            manufacturer_label, self.manufacturer_lineedit,
+            device_name_label, self.device_name_lineedit,
+            device_type_label, self.device_type_lineedit,
+            device_serial_label, self.device_serial_lineedit,
+            custom_addr_label, self.custom_addr_lineedit,
+            custom_name_label, self.custom_name_lineedit,
+            cal_addr_label, self.cal_addr_lineedit,
+            temperature_label, self.temperature_lineedit,
+            humidity_label, self.humidity_lineedit,
+            tester_label, self.tester_lineedit,
+            verifier_label, self.verifier_lineedit,
+            date_label, self.date_lineedit]
         widget_box = QGroupBox()
         widget_box_layout = QGridLayout()
         for i in range(len(line_box)):
             if i % 2 == 0:
-                widget_box_layout.addWidget(line_box[i], (i / 2), 0, 1, 1)
+                widget_box_layout.addWidget(
+                    line_box[i], (i / 2), 0, 1, 1)
                 line_box[i].setMaximumWidth(70)
             else:
-                widget_box_layout.addWidget(line_box[i], (i - 1) / 2, 1, 1, 4)
-        widget_box_layout.addWidget(self.save_basicinfo_pushbutton,
-                                    len(line_box) / 2, 1, 1, 2)
-        widget_box_layout.addWidget(self.get_serial_num_pushbutton,
-                                    len(line_box) / 2, 3, 1, 2)
+                widget_box_layout.addWidget(
+                    line_box[i], (i - 1) / 2, 1, 1, 4)
+        widget_box_layout.addWidget(
+            self.save_basicinfo_pushbutton, len(line_box) / 2, 1, 1, 2)
+        widget_box_layout.addWidget(
+            self.get_serial_num_pushbutton, len(line_box) / 2, 3, 1, 2)
         widget_box.setLayout(widget_box_layout)
         widget_box.setMinimumWidth(400)
         widget_box.setMaximumWidth(400)
         widget_box.setMinimumHeight(600)
         widget_box.setMaximumHeight(600)
         self.main_layout.addWidget(widget_box, 1, 1, 12, 4)
+        return line_box
 
     def stretch_set(self):
         """StretchSet docstring."""

@@ -338,11 +338,11 @@ class FSPrintReport(object):
 
 
 if __name__ == "__main__":
-    a = FSPrintReport(dbname="2016-9-8 ETS.mdb", report=True, language=1)
+    a = FSPrintReport(dbname="2016-10-1 HI-6005 探头横置, Z轴朝里.mdb", report=False, language=0)
     # a.PrintFieldLinearity()
-    # a.PrintFrequencyResponse()
-    a.PrintIsotropy("全向性_1000MHz_20V")
+    a.PrintFrequencyResponse()
+    # a.PrintIsotropy("全向性_1000MHz_20V")
     a.PrintInstrument()
-    # a.PrintCertNum()
-    # a.PrintDate()
+    a.PrintCertNum()
+    a.PrintDate()
     # a.doc.DocSave()

@@ -19,8 +19,6 @@ class TestDialog(QDialog):
         background_pic = QPixmap(pic)
         palette = QPalette()
         palette.setBrush(QPalette.Background, QBrush(background_pic))
-        # self.setMinimumWidth(700)
-        # self.setMinimumHeight(490)
         self.setPalette(palette)
         self.setModal(False)
 

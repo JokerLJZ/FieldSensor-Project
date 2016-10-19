@@ -83,7 +83,7 @@ class Access(object):
         elif tablename is None:
             raise ValueError("No tablename input, please check the input.")
         else:
-            print("Table has already in the database.")
+            pass
         if columnnamelist is None:
             print("No table name would be create.")
             return False
@@ -97,24 +97,24 @@ class Access(object):
                 raise ValueError("Wrong typelist input.")
                 return False
         columnnamelist = list(columnnamelist)
-        for obj in dic:
+        for obj in columnnamelist:
             if not self.IsColumnExist(tablename, str(obj)):
                 self.cursor.execute("ALTER TABLE %s ADD %s %s"
                                     % (tablename, str(obj), str(dic[obj])))
                 self.Commit()
             else:
-                print("Column %s has already in the table." % str(obj))
+                pass
 
-    def CreateSerial(self):
+    def CreateSerial(self, date="NOW()"):
         """Create the serial """
         if not self.IsTableExist("TestDate"):
             sql = "CREATE TABLE TestDate(TestSeriesNo AUTOINCREMENT \
                    PRIMARY KEY, TestDate datetime)"
             self.Execute(sql)
-            sql = "INSERT INTO TestDate (TestDate) VALUES (NOW())"
+            sql = "INSERT INTO TestDate (TestDate) VALUES (%s)" % date
             self.Execute(sql)
         else:
-            sql = "INSERT INTO TestDate (TestDate) VALUES (NOW())"
+            sql = "INSERT INTO TestDate (TestDate) VALUES (%s)" % date
             self.Execute(sql)
         sql = "SELECT LAST(TestSeriesNo) FROM TestDate"
         return self.cursor.execute(sql).fetchone()[0]
@@ -167,6 +167,24 @@ class Access(object):
         else:
             return False
 
+    def IsTableContentExist(self, tablename=None):
+        """
+           Check the tablecontent is exist or not, return True or False.
+
+           ==============  =================================================
+           **Argument:**
+           tablename        Defalt is None, str required.
+           ==============  =================================================
+        """
+        print(1)
+        sql = "SELECT COUNT(*) FROM %s" % tablename
+        self.cursor.execute(sql)
+        count = self.cursor.fetchone()
+        if count == 0:
+            return False
+        else:
+            return True
+
     def IsColumnExist(self, tablename=None, columnname=None):
         """
            Check the column in the table or not, return True or False.
@@ -184,11 +202,7 @@ class Access(object):
 
 
 if __name__ == "__main__":
-    db = Access("/Data/BasicInfo.accdb")
+    db = Access("/TestResult/Database/__.accdb")
     # print(db.CreateSerial())
-
-    db.CreateTable("DefaltInfo", columnnamelist=["客户标识"],
-                   typelist=["VARCHAR(30)"])
-    a = db.cursor.execute("SELECT * FROM Infoname").fetchall()
-    a = list(zip(*a))[0]
-    print(a)
+    sql = ""
+    db.Execute(sql)

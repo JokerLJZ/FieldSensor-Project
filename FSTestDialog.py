@@ -24,7 +24,6 @@ class FSTestDialog(TestDialog):
     def __init__(self):
         """Initial the setting dialog with modal mode."""
         super(FSTestDialog, self).__init__()
-        self.basicinfo = Access("//Data//BasicInfo.accdb")
         self.InitDialog()
 
     def InitDialog(self):
@@ -227,8 +226,9 @@ class FSTestDialog(TestDialog):
         freq_label_seq = [QLabel("频率" + str(i)) for i in range(1, 15)]
         for i in freq_label_seq:
             freq_disp_layout.addWidget(i, freq_label_seq.index(i), 0)
+        basicinfo = Access("//Data//BasicInfo.accdb")
         sql = "SELECT NormModeHigh FROM FrequencyList"
-        frequency_list = self.basicinfo.cursor.execute(sql).fetchall()
+        frequency_list = basicinfo.cursor.execute(sql).fetchall()
         frequency_list = list(zip(*frequency_list))[0]
         for i in range(len(frequency_list)):
             if frequency_list[i] is not None:
@@ -277,6 +277,7 @@ class FSTestDialog(TestDialog):
 
     def FreqSelMode(self):
         """FreqSelMode set a frequency box status."""
+        basicinfo = Access("//Data//BasicInfo.accdb")
         mode_checkbox = [
             self.freq_norm_mode.isChecked(),
             self.freq_ets_mode.isChecked(),
@@ -286,19 +287,19 @@ class FSTestDialog(TestDialog):
             self.low_freq_radiobutton.isChecked()]
         if mode_checkbox[0] and freq_checkbox[0]:
             sql = "SELECT NormModeHigh FROM FrequencyList"
-            frequency_list = self.basicinfo.cursor.execute(sql).fetchall()
+            frequency_list = basicinfo.cursor.execute(sql).fetchall()
             frequency_list = list(zip(*frequency_list))[0]
         elif mode_checkbox[0] and freq_checkbox[1]:
             sql = "SELECT NormModeLow FROM FrequencyList"
-            frequency_list = self.basicinfo.cursor.execute(sql).fetchall()
+            frequency_list = basicinfo.cursor.execute(sql).fetchall()
             frequency_list = list(zip(*frequency_list))[0]
         elif mode_checkbox[1] and freq_checkbox[0]:
             sql = "SELECT ETSModeHigh FROM FrequencyList"
-            frequency_list = self.basicinfo.cursor.execute(sql).fetchall()
+            frequency_list = basicinfo.cursor.execute(sql).fetchall()
             frequency_list = list(zip(*frequency_list))[0]
         elif mode_checkbox[1] and freq_checkbox[1]:
             sql = "SELECT ETSModeLow FROM FrequencyList"
-            frequency_list = self.basicinfo.cursor.execute(sql).fetchall()
+            frequency_list = basicinfo.cursor.execute(sql).fetchall()
             frequency_list = list(zip(*frequency_list))[0]
         else:
             frequency_list = [None]
@@ -312,6 +313,7 @@ class FSTestDialog(TestDialog):
 
     def IntensSelMode(self):
         """InrensSelMode set a intensity box status."""
+        basicinfo = Access("//Data//BasicInfo.accdb")
         mode_checkbox = [
             self.intens_linear_mode.isChecked(),
             self.intens_freres_mode.isChecked(),
@@ -321,19 +323,19 @@ class FSTestDialog(TestDialog):
             self.low_freq_radiobutton.isChecked()]
         if mode_checkbox[0] and intens_checkbox[0]:
             sql = "SELECT LinearModeHigh FROM IntensityList"
-            intensity_list = self.basicinfo.cursor.execute(sql).fetchall()
+            intensity_list = basicinfo.cursor.execute(sql).fetchall()
             intensity_list = list(zip(*intensity_list))[0]
         elif mode_checkbox[0] and intens_checkbox[1]:
             sql = "SELECT LinearModeLow FROM IntensityList"
-            intensity_list = self.basicinfo.cursor.execute(sql).fetchall()
+            intensity_list = basicinfo.cursor.execute(sql).fetchall()
             intensity_list = list(zip(*intensity_list))[0]
         elif mode_checkbox[1] and intens_checkbox[0]:
             sql = "SELECT FreqResModeHigh FROM IntensityList"
-            intensity_list = self.basicinfo.cursor.execute(sql).fetchall()
+            intensity_list = basicinfo.cursor.execute(sql).fetchall()
             intensity_list = list(zip(*intensity_list))[0]
         elif mode_checkbox[1] and intens_checkbox[1]:
             sql = "SELECT FreqResModeLow FROM IntensityList"
-            intensity_list = self.basicinfo.cursor.execute(sql).fetchall()
+            intensity_list = basicinfo.cursor.execute(sql).fetchall()
             intensity_list = list(zip(*intensity_list))[0]
         else:
             intensity_list = [None]

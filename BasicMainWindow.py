@@ -102,13 +102,7 @@ class MainWindow(QMainWindow):
         lineeditlist = [
             obj.text() for obj in self.central_box.linebox[1::2]]
         lineeditlist.pop(len(lineeditlist) - 1)
-        lineedit = str(lineeditlist)[2:len(lineeditlist) - 2]
-        print(lineeditlist)
-        # columnname = str(lineeditlist)[1: len]
-        # if not db.IsTableContentExist("TestInfo"):
-        db.cursor.execute(
-            "INSERT INTO TestInfo VALUES (%s)" % lineeditlist)
-        db.Commit()
+        print(infolist, lineeditlist)
 
     def start(self):
         """start docstring."""

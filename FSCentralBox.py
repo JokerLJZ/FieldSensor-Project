@@ -107,10 +107,10 @@ class FSCentralBox(CentralBox):
     def create_widget(self):
         """create_widget docstring."""
         cert_num_label = QLabel("证书编号")
-        device_serial_label = QLabel("设备序号")
-        manufacturer_label = QLabel("生产厂家")
+        device_serial_label = QLabel("出厂编号")
+        manufacturer_label = QLabel("制造厂家")
         device_name_label = QLabel("设备名称")
-        device_type_label = QLabel("设备型号")
+        device_type_label = QLabel("型号规格")
         custom_addr_label = QLabel("客户地址")
         custom_name_label = QLabel("客户名称")
         cal_addr_label = QLabel("校准地点")
@@ -123,12 +123,12 @@ class FSCentralBox(CentralBox):
         verifier_label = QLabel("核验人员")
         date_label = QLabel("测试日期")
         self.cert_num_lineedit = QLineEdit()  # 证书编号
-        self.device_serial_lineedit = QLineEdit()  # 设备序号
-        self.manufacturer_lineedit = QLineEdit()    # 生产厂家
+        self.device_serial_lineedit = QLineEdit()  # 出厂编号
+        self.manufacturer_lineedit = QLineEdit()    # 制造厂家
         self.device_name_lineedit = QLineEdit()    # 设备名称
         self.custom_addr_lineedit = QLineEdit()    # 客户地址
         self.custom_name_lineedit = QLineEdit()    # 客户名称
-        self.device_type_lineedit = QLineEdit()    # 设备型号
+        self.device_type_lineedit = QLineEdit()    # 型号规格
         self.cal_addr_lineedit = QLineEdit()    # 校准地点
         self.temperature_high_lineedit = QLineEdit()    # 温度
         self.humidity_high_lineedit = QLineEdit()    # 湿度

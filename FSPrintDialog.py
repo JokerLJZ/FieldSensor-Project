@@ -12,7 +12,7 @@ from BasicPrintDialog import PrintDialog
 from PyQt5.QtCore import QDateTime
 from PyQt5.QtWidgets import (
     QLabel, QLineEdit, QDateTimeEdit, QPushButton, QGroupBox, QGridLayout,
-    QListWidget)
+    QListWidget, QMessageBox)
 from Access import Access
 from PrintReport import FSPrintReport
 __author__ = "Joker.Liu"
@@ -28,6 +28,50 @@ class FSPrintDialog(PrintDialog):
     def __init__(self):
         """Initial the setting dialog with modal mode."""
         super(FSPrintDialog, self).__init__()
+
+    def StartPrintThread(self):
+        self.start_print_button.setEnabled(False)
+        report = FSPrintReport(dbname=self.dbname)
+        try:
+            report.PrintFrequencyResponse()
+        except:
+            pass
+        self.start_print_button.setEnabled(True)
+
+    def SaveInfo(self):
+        db = Access("TestResult\\DataBase\\%s" % self.dbname)
+        lineeditlist = [
+            obj.text() for obj in self.linebox[1::2]]
+        lineeditlist.pop(len(lineeditlist) - 1)
+        infoname = ["证书编号", "制造厂家", "设备名称", "型号规格", "出厂编号",
+                    "客户地址", "客户名称", "校准地点", "温度高频",
+                    "相对湿度高频", "温度低频", "相对湿度低频", "电源电压",
+                    "校准人", "核验人"]
+        if db.IsTableContentExist("TestInfo"):
+            db.cursor.execute("DELETE FROM TestInfo")
+        for i in range(len(infoname)):
+            if i == 0:
+                content = (infoname[i], lineeditlist[i])
+                flag = content
+                db.cursor.execute(
+                    "INSERT INTO TestInfo (%s) VALUES ('%s')" % content)
+                db.Commit()
+            else:
+                if "温度" in infoname[i] and "℃" not in lineeditlist[i]:
+                    infocontent = lineeditlist[i] + "℃"
+                elif "湿度" in infoname[i] and "%" not in lineeditlist[i]:
+                    infocontent = lineeditlist[i] + "%"
+                else:
+                    infocontent = lineeditlist[i]
+                content = (infoname[i], infocontent, flag[0], flag[1])
+                db.cursor.execute(
+                    "UPDATE TestInfo SET %s = '%s' WHERE %s = '%s'" % (
+                        content))
+                db.Commit()
+        db.cursor.execute("DELETE FROM TestDate")
+        datetime = self.date_lineedit.dateTime().toString(
+            "#yyyy-MM-dd HH:MM:ss#")
+        db.CreateSerial(datetime)
 
     def ItemChanged(self):
         db = Access(
@@ -56,6 +100,8 @@ class FSPrintDialog(PrintDialog):
             self.device_serial_lineedit]
         for i in range(len(infobox)):
             infobox[i].setText(info[i])
+        date = db.cursor.execute("SELECT TestDate FROM TestDate").fetchone()[0]
+        self.date_lineedit.setDate(date)
         db.ConnClose()
         self.dbname = self.list_box.currentItem().text()
         self.infobox = infobox
@@ -152,3 +198,4 @@ class FSPrintDialog(PrintDialog):
         widget_box.setMaximumWidth(400)
         widget_box.setMinimumHeight(600)
         widget_box.setMaximumHeight(600)
+        self.linebox = line_box

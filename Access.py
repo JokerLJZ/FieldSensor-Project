@@ -176,7 +176,6 @@ class Access(object):
            tablename        Defalt is None, str required.
            ==============  =================================================
         """
-        print(1)
         sql = "SELECT COUNT(*) FROM %s" % tablename
         self.cursor.execute(sql)
         count = self.cursor.fetchone()

@@ -1,10 +1,14 @@
 """docstring..."""
 # -*- coding: utf-8 -*-
 
+import threading
 import os
+import time
 from Access import Access
-from PyQt5.QtWidgets import (QDialog, QLabel, QLineEdit, QPushButton,
-                             QGridLayout, QGroupBox, QListWidget, QTimeEdit)
+from PyQt5.QtCore import QDateTime
+from PyQt5.QtWidgets import (
+    QDialog, QLabel, QLineEdit, QPushButton, QGridLayout, QGroupBox,
+    QListWidget, QDateTimeEdit, QTextEdit)
 from PyQt5.QtGui import QIcon
 
 
@@ -24,7 +28,13 @@ class PrintDialog(QDialog):
         self.main_layout = QGridLayout()
         self.CreateWidget()
         self.list_box = self.CreateListBox()
-        self.main_layout.addWidget(self.list_box, 1, 6, 6, 3)
+        self.main_layout.addWidget(self.list_box, 0, 6, 8, 4)
+        self.start_print_button = QPushButton("打印报告")
+        self.start_print_button.clicked.connect(self.StartPrint)
+        self.save_basicinfo_pushbutton.clicked.connect(self.SaveInfo)
+        self.main_layout.addWidget(self.start_print_button, 14, 7, 3, 2)
+        self.textedit = QTextEdit()
+        self.main_layout.addWidget(self.textedit, 0, 11, 12, 6)
         self.setLayout(self.main_layout)
 
     def CreateListBox(self):
@@ -39,6 +49,15 @@ class PrintDialog(QDialog):
         list_box.currentItemChanged.connect(self.ItemChanged)
         return list_box
 
+    def StartPrint(self):
+        th = threading.Thread(target=self.StartPrintThread)
+        th.start()
+
+    def StartPrintThread(self):
+        self.start_print_button.setEnabled(False)
+        time.sleep(10)
+        self.start_print_button.setEnabled(True)
+
     def ItemChanged(self):
         db = Access(
             "TestResult\\DataBase\\%s" % self.list_box.currentItem().text())
@@ -49,10 +68,7 @@ class PrintDialog(QDialog):
         self.dbname = self.list_box.currentItem().text()
 
     def SaveInfo(self):
-        infocolumn = (
-            "证书编号, 客户地址, 客户名称, 设备名称, 电源电压, 校准地点, "
-            "温度高频, 相对湿度高频, 温度低频, 相对湿度低频, 校准人, 核验人, "
-            "制造厂家, 型号规格, 出厂编号")
+        pass
 
     def CreateWidget(self):
         """CreateWidget docstring."""
@@ -64,10 +80,8 @@ class PrintDialog(QDialog):
         custom_addr_label = QLabel("客户地址")
         custom_name_label = QLabel("客户名称")
         cal_addr_label = QLabel("校准地点")
-        temperature_high_label = QLabel("温度高频")
-        humidity_high_label = QLabel("湿度高频")
-        temperature_low_label = QLabel("温度低频")
-        humidity_low_label = QLabel("湿度低频")
+        temperature_label = QLabel("温    度")
+        humidity_label = QLabel("湿    度")
         tester_label = QLabel("测试人员")
         date_label = QLabel("测试日期")
         self.cert_num_lineedit = QLineEdit()  # 证书编号
@@ -78,14 +92,11 @@ class PrintDialog(QDialog):
         self.custom_name_lineedit = QLineEdit()    # 客户名称
         self.device_type_lineedit = QLineEdit()    # 型号规格
         self.cal_addr_lineedit = QLineEdit()    # 校准地点
-        self.temperature_high_lineedit = QLineEdit()    # 温度
-        self.humidity_high_lineedit = QLineEdit()    # 湿度
-        self.temperature_low_lineedit = QLineEdit()    # 温度
-        self.humidity_low_lineedit = QLineEdit()    # 湿度
+        self.temperature_lineedit = QLineEdit()    # 温度
+        self.humidity_lineedit = QLineEdit()    # 湿度
         self.tester_lineedit = QLineEdit()    # 测试人员
-        self.date_lineedit = QLineEdit()    # 测试日期
+        self.date_lineedit = QDateTimeEdit(QDateTime.currentDateTime())
         self.save_basicinfo_pushbutton = QPushButton("保存基本信息")
-        self.get_serial_num_pushbutton = QPushButton("获取序列号")
         line_box = [
             cert_num_label, self.cert_num_lineedit,
             manufacturer_label, self.manufacturer_lineedit,
@@ -95,10 +106,8 @@ class PrintDialog(QDialog):
             custom_addr_label, self.custom_addr_lineedit,
             custom_name_label, self.custom_name_lineedit,
             cal_addr_label, self.cal_addr_lineedit,
-            temperature_high_label, self.temperature_high_lineedit,
-            humidity_high_label, self.humidity_high_lineedit,
-            temperature_low_label, self.temperature_low_lineedit,
-            humidity_low_label, self.humidity_low_lineedit,
+            temperature_label, self.temperature_lineedit,
+            humidity_label, self.humidity_lineedit,
             tester_label, self.tester_lineedit,
             date_label, self.date_lineedit]
         widget_box = QGroupBox()

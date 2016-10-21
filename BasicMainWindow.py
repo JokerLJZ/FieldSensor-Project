@@ -102,7 +102,6 @@ class MainWindow(QMainWindow):
         lineeditlist = [
             obj.text() for obj in self.central_box.linebox[1::2]]
         lineeditlist.pop(len(lineeditlist) - 1)
-        print(infolist, lineeditlist)
 
     def start(self):
         """start docstring."""

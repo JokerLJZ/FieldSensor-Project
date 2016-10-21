@@ -126,11 +126,10 @@ class MainWindow(QMainWindow):
 
     def about(self):
         """About string."""
-        QMessageBox.about(self, "About programme of CTTL",
-                          "<p><b>The test programme uses the python version of"
-                          " 3.4.4</p></b>"
-                          "<p>a recently used file menu in a Qt application."
-                          "</p>")
+        QMessageBox.about(
+            self, "About programme of CTTL",
+            "<p><b>The test programme uses the python version of 3.4.4</p></b>"
+            "<p>a recently used file menu in a Qt application.</p>")
 
 
 if __name__ == '__main__':

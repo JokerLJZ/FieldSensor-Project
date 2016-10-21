@@ -5,6 +5,7 @@
 from PyQt5.QtGui import QIcon, QPixmap, QPalette, QBrush
 from PyQt5.QtWidgets import (QAction, QApplication, QMainWindow, QMessageBox)
 from Access import Access
+from BasicPrintDialog import PrintDialog
 
 
 class MainWindow(QMainWindow):
@@ -12,7 +13,7 @@ class MainWindow(QMainWindow):
 
     version = "1.0.0"
 
-    def __init__(self, setting_dialog, print_dialog, central_box, test_dialog):
+    def __init__(self, setting_dialog, central_box, test_dialog):
         """__init__ docstring.
 
            ==============  ====================
@@ -26,7 +27,6 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.central_box = central_box
         self.setting_dialog = setting_dialog
-        self.printing_dialog = print_dialog
         self.test_dialog = test_dialog
         self.CreateMainWindow()
 
@@ -121,6 +121,7 @@ class MainWindow(QMainWindow):
 
     def printing(self):
         """Printing string."""
+        self.printing_dialog = PrintDialog()
         self.printing_dialog.show()
 
     def about(self):
@@ -140,12 +141,10 @@ if __name__ == '__main__':
     from BasicTestDialog import TestDialog
     app = QApplication(sys.argv)
     setting_dialog = SettingDialog()
-    print_dialog = PrintDialog()
     central_box = CentralBox()
     test_dialog = TestDialog()
     mainWin = MainWindow(
         setting_dialog=setting_dialog,
-        print_dialog=print_dialog,
         central_box=central_box,
         test_dialog=test_dialog)
     mainWin.show()

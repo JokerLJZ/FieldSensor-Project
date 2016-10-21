@@ -24,21 +24,20 @@ class FSMainWindow(MainWindow):
         """docstring."""
 
         self.setting_dialog = FSSettingDialog()
-        self.print_dialog = FSPrintDialog()
         self.central_box = FSCentralBox()
         self.test_dialog = FSTestDialog()
 
         super(FSMainWindow, self).__init__(
             setting_dialog=self.setting_dialog,
-            print_dialog=self.print_dialog,
             central_box=self.central_box,
             test_dialog=self.test_dialog)
 
+    def printing(self):
+        """Printing string."""
+        self.printing_dialog = FSPrintDialog()
+        self.printing_dialog.show()
+
     def InsertDbInfo(self, db=None):
-        basicdb = Access("/Data/BasicInfo.accdb")
-        infolist = basicdb.cursor.execute(
-            "SELECT Name FROM InfoName").fetchall()
-        infolist = tuple(zip(*infolist))[0]
         lineeditlist = [
             obj.text() for obj in self.central_box.linebox[1::2]]
         lineeditlist.pop(len(lineeditlist) - 1)
@@ -51,7 +50,6 @@ class FSMainWindow(MainWindow):
         for i in range(len(infoname)):
             if i == 0:
                 content = (infoname[i], lineeditlist[i])
-                print(content)
                 flag = content
                 db.cursor.execute(
                     "INSERT INTO TestInfo (%s) VALUES ('%s')" % content)

@@ -4,7 +4,7 @@
 import os
 from Access import Access
 from PyQt5.QtWidgets import (QDialog, QLabel, QLineEdit, QPushButton,
-                             QGridLayout, QGroupBox, QListWidget)
+                             QGridLayout, QGroupBox, QListWidget, QTimeEdit)
 from PyQt5.QtGui import QIcon
 
 
@@ -44,16 +44,23 @@ class PrintDialog(QDialog):
             "TestResult\\DataBase\\%s" % self.list_box.currentItem().text())
         sql = ("SELECT TestDate FROM TestDate")
         date = db.cursor.execute(sql).fetchone()[0]
-        sql = ("SELECT 设备名称, 制造厂家,客户名称,客户地址, 型号规格, 出厂编号,"
+        sql = ("SELECT 设备名称, 制造厂家, 客户名称,客户地址, 型号规格, 出厂编号,"
                "资产编号, 温度高频, 相对湿度高频, 温度低频, 相对湿度低频")
+        self.dbname = self.list_box.currentItem().text()
+
+    def SaveInfo(self):
+        infocolumn = (
+            "证书编号, 客户地址, 客户名称, 设备名称, 电源电压, 校准地点, "
+            "温度高频, 相对湿度高频, 温度低频, 相对湿度低频, 校准人, 核验人, "
+            "制造厂家, 型号规格, 出厂编号")
 
     def CreateWidget(self):
         """CreateWidget docstring."""
         cert_num_label = QLabel("证书编号")
-        device_serial_label = QLabel("设备序号")
-        manufacturer_label = QLabel("生产厂家")
+        device_serial_label = QLabel("出厂编号")
+        manufacturer_label = QLabel("制造厂家")
         device_name_label = QLabel("设备名称")
-        device_type_label = QLabel("设备型号")
+        device_type_label = QLabel("型号规格")
         custom_addr_label = QLabel("客户地址")
         custom_name_label = QLabel("客户名称")
         cal_addr_label = QLabel("校准地点")
@@ -64,12 +71,12 @@ class PrintDialog(QDialog):
         tester_label = QLabel("测试人员")
         date_label = QLabel("测试日期")
         self.cert_num_lineedit = QLineEdit()  # 证书编号
-        self.device_serial_lineedit = QLineEdit()  # 设备序号
-        self.manufacturer_lineedit = QLineEdit()    # 生产厂家
+        self.device_serial_lineedit = QLineEdit()  # 出厂编号
+        self.manufacturer_lineedit = QLineEdit()    # 制造厂家
         self.device_name_lineedit = QLineEdit()    # 设备名称
         self.custom_addr_lineedit = QLineEdit()    # 客户地址
         self.custom_name_lineedit = QLineEdit()    # 客户名称
-        self.device_type_lineedit = QLineEdit()    # 设备型号
+        self.device_type_lineedit = QLineEdit()    # 型号规格
         self.cal_addr_lineedit = QLineEdit()    # 校准地点
         self.temperature_high_lineedit = QLineEdit()    # 温度
         self.humidity_high_lineedit = QLineEdit()    # 湿度

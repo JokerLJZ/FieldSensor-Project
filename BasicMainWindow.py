@@ -5,7 +5,10 @@
 from PyQt5.QtGui import QIcon, QPixmap, QPalette, QBrush
 from PyQt5.QtWidgets import (QAction, QApplication, QMainWindow, QMessageBox)
 from Access import Access
+from BasicSettingDialog import SettingDialog
 from BasicPrintDialog import PrintDialog
+from BasicCentralBox import CentralBox
+from BasicTestDialog import TestDialog
 
 
 class MainWindow(QMainWindow):
@@ -13,7 +16,7 @@ class MainWindow(QMainWindow):
 
     version = "1.0.0"
 
-    def __init__(self, setting_dialog, central_box, test_dialog):
+    def __init__(self, central_box):
         """__init__ docstring.
 
            ==============  ====================
@@ -26,8 +29,6 @@ class MainWindow(QMainWindow):
         """
         super(MainWindow, self).__init__()
         self.central_box = central_box
-        self.setting_dialog = setting_dialog
-        self.test_dialog = test_dialog
         self.CreateMainWindow()
 
     def CreateMainWindow(self):
@@ -105,10 +106,11 @@ class MainWindow(QMainWindow):
 
     def start(self):
         """start docstring."""
+        self.test_dialog = TestDialog()
         self.central_box.start_test_pushbutton.setEnabled(False)
         self.test_dialog.closeEvent = self.close_event
         self.test_dialog.show()
-        self.CreateDb()
+        # self.CreateDb()
 
     def close_event(self, event):
         """close_event docstring."""
@@ -116,6 +118,7 @@ class MainWindow(QMainWindow):
 
     def setting(self):
         """Setting string."""
+        self.setting_dialog = SettingDialog()
         self.setting_dialog.show()
 
     def printing(self):
@@ -133,17 +136,10 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
     import sys
-    from BasicSettingDialog import SettingDialog
-    from BasicPrintDialog import PrintDialog
-    from BasicCentralBox import CentralBox
-    from BasicTestDialog import TestDialog
     app = QApplication(sys.argv)
     setting_dialog = SettingDialog()
     central_box = CentralBox()
-    test_dialog = TestDialog()
     mainWin = MainWindow(
-        setting_dialog=setting_dialog,
-        central_box=central_box,
-        test_dialog=test_dialog)
+        central_box=central_box)
     mainWin.show()
     sys.exit(app.exec_())

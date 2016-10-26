@@ -4,3 +4,8 @@
 *.docx
 *.pyc
 *.ldb
+/TestResult
+/Data/Old BasicInfo
+*.log
+/Data/__pycache__
+/__pycache__

@@ -42,7 +42,6 @@ class FSPrintReport(object):
             self.position = "OriginalPosition"
         self.report = report
         self.language = language
-        self.PrintInfo()
 
     def PrintFrequencyResponse(self):
         """Print the frequency response."""
@@ -116,8 +115,15 @@ class FSPrintReport(object):
                     tablenum=tablenum - 1, cellrow=i + 2, cellcolum=j + 1,
                     insertcontent=testdata[i][j])
 
-    def PrintIsotropy(self, dbname=None):
+    def PrintIsotropy(self):
         """Print isotropy."""
+        dbname = self.db.GetTableName()
+        dbname = list(filter(lambda x: "全向性" in x, dbname))
+        if len(dbname) == 0:
+            print("无全向性数据, 全向性打印错误")
+            return
+        else:
+            dbname = dbname[0]
         title = re.search(r'\d+\.{0,1}\d{0,}(e-\d+)?MHz', dbname).group(0)
         freq = title[:-3]
         if float(freq) >= 1000:
@@ -131,7 +137,9 @@ class FSPrintReport(object):
         intensity = re.search(r"\d+V", dbname).group(0)
         sql = "SELECT MAX(TestSeriesNo), MIN(TestSeriesNo) FROM %s" % dbname
         serial = self.db.cursor.execute(sql).fetchone()
-        assert serial[0] == serial[1]
+        if serial[0] != serial[1]:
+            print("全向性数据TestSeriesNo不一致, 请检查数据并重新打印")
+            return None
         sql = ("SELECT Degree__°, Field__V_per_m FROM %s"
                " ORDER BY Degree__°" % dbname)
         testdata = list(self.db.cursor.execute(sql).fetchall())
@@ -139,7 +147,9 @@ class FSPrintReport(object):
         sql = ("SELECT TableNum FROM %s WHERE "
                "TestItems='全向性'" % self.position)
         tablenum = self.basicinfo.cursor.execute(sql).fetchone()[0]
-        assert rownum == 72
+        if rownum != 72:
+            print("全向性数据不为72组, 请检查数据重新打印或者手动制表")
+            return None
         # 打印标题
         if self.report is not True or self.language == 0:
             self.doc.TableContent(
@@ -244,11 +254,10 @@ class FSPrintReport(object):
                     tablenum=tablenum, cellrow=row, cellcolum=col,
                     insertcontent=content)
 
-    def PrintDate(self, testseries=1):
+    def PrintDate(self):
         """Print the date of the report."""
         sql = ("SELECT FORMAT(TestDate, 'yyyy年mm月dd日'), "
-               "FORMAT(TestDate, 'mmmm dd, yyyy') FROM TestDate "
-               "WHERE TestSeriesNo=%s" % testseries)
+               "FORMAT(TestDate, 'mmmm dd, yyyy') FROM TestDate")
         [datecn, dateen] = self.db.cursor.execute(sql).fetchone()
         if self.report is not True:
             date = datecn
@@ -275,7 +284,6 @@ class FSPrintReport(object):
                "TestItems='证书编号'" % self.position)
         sql = ("SELECT 证书编号 FROM TestInfo")
         certnum = self.db.cursor.execute(sql).fetchone()[0]
-        print(certnum)
         self.doc.InsertHeader(
             "%s" % certnum, language=self.language, report=self.report)
 
@@ -338,11 +346,11 @@ class FSPrintReport(object):
 
 
 if __name__ == "__main__":
-    a = FSPrintReport(dbname="2016-10-1 HI-6005 探头横置, Z轴朝里.mdb", report=False, language=0)
+    a = FSPrintReport(dbname="2016-9-8 ETS.mdb", report=True, language=0)
     # a.PrintFieldLinearity()
-    a.PrintFrequencyResponse()
-    # a.PrintIsotropy("全向性_1000MHz_20V")
-    a.PrintInstrument()
-    a.PrintCertNum()
-    a.PrintDate()
+    # a.PrintFrequencyResponse()
+    a.PrintIsotropy()
+    # a.PrintInstrument()
+    # a.PrintCertNum()
+    # a.PrintDate()
     # a.doc.DocSave()

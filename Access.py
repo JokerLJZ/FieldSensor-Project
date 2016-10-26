@@ -202,6 +202,6 @@ class Access(object):
 
 if __name__ == "__main__":
     db = Access("/TestResult/Database/__.accdb")
-    # print(db.CreateSerial())
+    print(db.CreateSerial())
     sql = ""
     db.Execute(sql)

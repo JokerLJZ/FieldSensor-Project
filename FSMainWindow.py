@@ -23,19 +23,28 @@ class FSMainWindow(MainWindow):
     def __init__(self):
         """docstring."""
 
-        self.setting_dialog = FSSettingDialog()
         self.central_box = FSCentralBox()
-        self.test_dialog = FSTestDialog()
 
         super(FSMainWindow, self).__init__(
-            setting_dialog=self.setting_dialog,
-            central_box=self.central_box,
-            test_dialog=self.test_dialog)
+            central_box=self.central_box,)
 
     def printing(self):
         """Printing string."""
         self.printing_dialog = FSPrintDialog()
         self.printing_dialog.show()
+
+    def setting(self):
+        """Setting string."""
+        self.setting_dialog = FSSettingDialog()
+        self.setting_dialog.show()
+
+    def start(self):
+        """start docstring."""
+        self.test_dialog = FSTestDialog()
+        self.central_box.start_test_pushbutton.setEnabled(False)
+        self.test_dialog.closeEvent = self.close_event
+        self.test_dialog.show()
+        self.CreateDb()
 
     def InsertDbInfo(self, db=None):
         lineeditlist = [

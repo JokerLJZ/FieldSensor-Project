@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTextEdit
 from PyQt5.QtGui import QIcon, QPixmap, QPalette, QBrush
 
 
@@ -21,10 +21,14 @@ class TestDialog(QDialog):
         palette.setBrush(QPalette.Background, QBrush(background_pic))
         self.setPalette(palette)
         self.setModal(False)
+        self.InitDialog()
 
-    def init_dialog(self):
+    def InitDialog(self):
         """Initial the test dialog."""
-        self.create_widget()
+        self.main_layout = QVBoxLayout()
+        self.textedit = QTextEdit()
+        self.main_layout.addWidget(self.textedit)
+        self.setLayout(self.main_layout)
 
 
 if __name__ == '__main__':

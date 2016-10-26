@@ -10,6 +10,7 @@ Commercial use was not allowed.
 import os
 from BasicPrintDialog import PrintDialog
 from PyQt5.QtCore import QDateTime
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (
     QLabel, QLineEdit, QDateTimeEdit, QPushButton, QGroupBox, QGridLayout,
     QListWidget, QMessageBox)
@@ -29,13 +30,54 @@ class FSPrintDialog(PrintDialog):
         """Initial the setting dialog with modal mode."""
         super(FSPrintDialog, self).__init__()
 
-    def StartPrintThread(self):
+    def StartPrintThread(self, report=True):
         self.start_print_button.setEnabled(False)
-        report = FSPrintReport(dbname=self.dbname)
+        for i in range(1, len(self.language_box.children())):
+            if self.language_box.children()[i].isChecked():
+                language = i - 1
+        try:
+            if ".mdb" in self.dbname:
+                filename = self.dbname[: len(self.dbname) - 4]
+            elif ".accdb" in self.dbname:
+                filename = self.dbname[: len(self.dbname) - 6]
+            else:
+                filename = "校准报告"
+            report = FSPrintReport(
+                filename=filename, dbname=self.dbname, report=report,
+                language=language)
+        except:
+            print("数据库有误, 请重新选择")
+            self.start_print_button.setEnabled(True)
+            return None
+        try:
+            report.PrintInfo()
+        except:
+            print("打印基础信息错误")
+        try:
+            report.PrintDate()
+        except:
+            print("打印日期错误")
+        try:
+            report.PrintCertNum()
+        except:
+            print("打印证书序列号错误")
+        try:
+            report.PrintInstrument()
+        except:
+            print("打印设备信息错误")
         try:
             report.PrintFrequencyResponse()
         except:
-            pass
+            print("打印频率响应错误")
+        try:
+            report.PrintFieldLinearity()
+        except:
+            print("打印场强线性度错误")
+        try:
+            report.PrintIsotropy()
+        except:
+            print("打印全向性错误")
+        report.doc.DocSave(report.doc.filename)
         self.start_print_button.setEnabled(True)
 
     def SaveInfo(self):
@@ -145,6 +187,8 @@ class FSPrintDialog(PrintDialog):
         self.verifier_lineedit = QLineEdit()    # 核验人员
         self.date_lineedit = QDateTimeEdit(QDateTime.currentDateTime())
         self.save_basicinfo_pushbutton = QPushButton("保存基本信息")
+        self.save_basicinfo_pushbutton.setFont(
+            QFont("黑体", 20))
         line_box = [
             cert_num_label, self.cert_num_lineedit,
             manufacturer_label, self.manufacturer_lineedit,

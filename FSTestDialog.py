@@ -24,7 +24,6 @@ class FSTestDialog(TestDialog):
     def __init__(self):
         """Initial the setting dialog with modal mode."""
         super(FSTestDialog, self).__init__()
-        self.InitDialog()
 
     def InitDialog(self):
         """init_dialog docstring."""

@@ -51,10 +51,8 @@ class CentralBox(QWidget):
         custom_addr_label = QLabel("客户地址")
         custom_name_label = QLabel("客户名称")
         cal_addr_label = QLabel("校准地点")
-        temperature_high_label = QLabel("温度高频")
-        humidity_high_label = QLabel("湿度高频")
-        temperature_low_label = QLabel("温度低频")
-        humidity_low_label = QLabel("湿度低频")
+        temperature_label = QLabel("温    度")
+        humidity_label = QLabel("湿    度")
         tester_label = QLabel("测试人员")
         date_label = QLabel("测试日期")
         self.cert_num_lineedit = QLineEdit()  # 证书编号
@@ -65,10 +63,8 @@ class CentralBox(QWidget):
         self.custom_name_lineedit = QLineEdit()    # 客户名称
         self.device_type_lineedit = QLineEdit()    # 型号规格
         self.cal_addr_lineedit = QLineEdit()    # 校准地点
-        self.temperature_high_lineedit = QLineEdit()    # 温度
-        self.humidity_high_lineedit = QLineEdit()    # 湿度
-        self.temperature_low_lineedit = QLineEdit()    # 温度
-        self.humidity_low_lineedit = QLineEdit()    # 湿度
+        self.temperature_lineedit = QLineEdit()    # 温度
+        self.humidity_lineedit = QLineEdit()    # 湿度
         self.tester_lineedit = QLineEdit()    # 测试人员
         self.date_lineedit = QLineEdit()    # 测试日期
         self.save_basicinfo_pushbutton = QPushButton("保存基本信息")
@@ -82,10 +78,8 @@ class CentralBox(QWidget):
             custom_addr_label, self.custom_addr_lineedit,
             custom_name_label, self.custom_name_lineedit,
             cal_addr_label, self.cal_addr_lineedit,
-            temperature_high_label, self.temperature_high_lineedit,
-            humidity_high_label, self.humidity_high_lineedit,
-            temperature_low_label, self.temperature_low_lineedit,
-            humidity_low_label, self.humidity_low_lineedit,
+            temperature_label, self.temperature_lineedit,
+            humidity_label, self.humidity_lineedit,
             tester_label, self.tester_lineedit,
             date_label, self.date_lineedit]
         widget_box = QGroupBox()

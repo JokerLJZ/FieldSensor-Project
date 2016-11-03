@@ -104,8 +104,8 @@ class FSCentralBox(CentralBox):
         self.verifier_lineedit.setText(info[11])
         self.manufacturer_lineedit.setText(info[12])
 
-    def create_widget(self):
-        """create_widget docstring."""
+    def CreateWidget(self):
+        """CreateWidget docstring."""
         cert_num_label = QLabel("证书编号")
         device_serial_label = QLabel("出厂编号")
         manufacturer_label = QLabel("制造厂家")

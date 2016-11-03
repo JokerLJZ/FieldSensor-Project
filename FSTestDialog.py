@@ -7,10 +7,12 @@ You could read the sorce code of this programme.
 Commercial use was not allowed.
 """
 
-from PyQt5.QtWidgets import (QRadioButton, QGridLayout, QGroupBox, QLineEdit,
-                             QVBoxLayout, QLabel, QPushButton)
-from BasicTestDialog import TestDialog
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit,
+                             QPushButton, QRadioButton, QTextEdit, QVBoxLayout)
+
 from Access import Access
+from BasicTestDialog import TestDialog, EmittingStream
+
 __author__ = "Joker.Liu"
 
 
@@ -28,21 +30,42 @@ class FSTestDialog(TestDialog):
     def InitDialog(self):
         """init_dialog docstring."""
         self.main_layout = QGridLayout()
+        textedit_box, self.textedit = self.CreateTextEditBox()
         freq_select_box = self.CreateFreqSelectBox()
         freq_disp_box = self.CreateFreqDispBox()
         freq_mode_box = self.CreateFreqModeBox()
-        test_box = self.CreateTestBox()
-        intensity_disp_box = self.CreateIntensityDispBox()
         intens_mode_box = self.CreateIntensityModeBox()
+        intensity_disp_box = self.CreateIntensityDispBox()
+        test_box = self.CreateTestBox()
         isotropy_select_box = self.CreateIsotropySelectBox()
+        instrument_addr_box = self.CreateInstrumentAddrBox()
         self.main_layout.addWidget(freq_select_box, 0, 0, 1, 2)
         self.main_layout.addWidget(freq_mode_box, 1, 0, 1, 2)
         self.main_layout.addWidget(freq_disp_box, 0, 4, 2, 4)
         self.main_layout.addWidget(intensity_disp_box, 0, 8, 2, 4)
         self.main_layout.addWidget(isotropy_select_box, 0, 2, 1, 2)
         self.main_layout.addWidget(intens_mode_box, 1, 2, 1, 2)
-        self.main_layout.addWidget(test_box, 1, 12, 1, 2)
+        self.main_layout.addWidget(test_box, 2, 12, 4, 4)
+        self.main_layout.addWidget(textedit_box, 2, 0, 4, 12)
+        self.main_layout.addWidget(instrument_addr_box, 0, 12, 2, 4)
+        self.StretchSet()
         self.setLayout(self.main_layout)
+
+    def StretchSet(self):
+        """StretchSet docstring."""
+        self.setMinimumHeight(710)
+        self.main_layout.setRowStretch(0, 1)
+        self.main_layout.setRowStretch(1, 1)
+        self.main_layout.setRowStretch(2, 4)
+
+    def CreateTextEditBox(self):
+        textedit = QTextEdit()
+        textedit.setReadOnly(True)
+        textedit_box = QGroupBox("实时信息监控")
+        layout = QVBoxLayout()
+        layout.addWidget(textedit)
+        textedit_box.setLayout(layout)
+        return textedit_box, textedit
 
     def CreateTestBox(self):
         """CreateTestBox docstring."""
@@ -192,6 +215,27 @@ class FSTestDialog(TestDialog):
         intens_mode_box.setLayout(intens_mode_layout)
 
         return intens_mode_box
+
+    def CreateInstrumentAddrBox(self):
+        """Create the inst visa address lineedit groupbox."""
+        high_sg_addr_label = QLabel("高频信号源")
+        self.high_sg_addr_lineedit = QLineEdit("GIB0::19::INSTR")
+        high_pa_addr_label = QLabel("高频功放")
+        self.high_pa_addr_lineedit = QLineEdit("GIB0::7::INSTR")
+        high_ct_addr_label = QLabel("暗室转台")
+        self.high_ct_addr_lineedit = QLineEdit("GIB0::10::INSTR")
+        inst_addr_lineedit_list = [
+            [high_sg_addr_label, self.high_sg_addr_lineedit],
+            [high_pa_addr_label, self.high_pa_addr_lineedit],
+            [high_ct_addr_label, self.high_ct_addr_lineedit]]
+        inst_addr_box = QGroupBox("仪表连接地址")
+        inst_layout = QGridLayout()
+        for obj in inst_addr_lineedit_list:
+            index = inst_addr_lineedit_list.index(obj)
+            inst_layout.addWidget(obj[0], index, 0, 1, 1)
+            inst_layout.addWidget(obj[1], index, 1, 1, 1)
+        inst_addr_box.setLayout(inst_layout)
+        return inst_addr_box
 
     def CreateFreqDispBox(self):
         """Create the frequency display lineedit groupbox."""
@@ -347,6 +391,7 @@ class FSTestDialog(TestDialog):
             self.intensity_lineedit_box[i].clear()
 
     def StartTest(self):
+        import time
         intensity = [
             obj.text() for obj in self.intensity_lineedit_box
             if obj.text().__len__() > 0]
@@ -355,7 +400,6 @@ class FSTestDialog(TestDialog):
             if obj.text().__len__() > 0]
         self.start_test_button.setEnabled(False)
         self.stop_test_button.setEnabled(True)
-        print(intensity, frequency)
 
     def StopTest(self):
         self.start_test_button.setEnabled(True)

@@ -1,9 +1,17 @@
 """docstring..."""
 # -*- coding: utf-8 -*-
 
-
+import sys
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTextEdit
 from PyQt5.QtGui import QIcon, QPixmap, QPalette, QBrush
+
+
+class EmittingStream(QtCore.QObject):
+    textWritten = QtCore.pyqtSignal(str)
+
+    def write(self, text):
+        self.textWritten.emit(str(text))
 
 
 class TestDialog(QDialog):
@@ -22,6 +30,21 @@ class TestDialog(QDialog):
         self.setPalette(palette)
         self.setModal(False)
         self.InitDialog()
+        sys.stdout = EmittingStream(textWritten=self.normalOutputWritten)
+        sys.stder = EmittingStream(textWritten=self.normalOutputWritten)
+        self.closeEvent = self.CloseEvent
+
+    def CloseEvent(self, event):
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+
+    def normalOutputWritten(self, text):
+        """Append text to the QTextEdit."""
+        cursor = self.textedit.textCursor()
+        cursor.movePosition(QtGui.QTextCursor.End)
+        cursor.insertText(text)
+        self.textedit.setTextCursor(cursor)
+        self.textedit.ensureCursorVisible()
 
     def InitDialog(self):
         """Initial the test dialog."""

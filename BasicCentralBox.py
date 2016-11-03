@@ -18,14 +18,14 @@ class CentralBox(QWidget):
     def init_box(self):
         """init_box docstring."""
         self.main_layout = QGridLayout()
-        self.linebox = self.create_widget()
-        self.create_enter_test()
+        self.linebox = self.CreateWidget()
+        self.CreateEnterTest()
         self.setLayout(self.main_layout)
-        self.stretch_set()
+        self.StretchSet()
         self.CreateInfoBox()
 
-    def create_enter_test(self):
-        """create_enter_test docstring."""
+    def CreateEnterTest(self):
+        """CreateEnterTest docstring."""
         self.start_test_pushbutton = QPushButton("开始测试")    # 开始测试
         self.start_test_pushbutton.resize(6, 6)
         self.start_test_pushbutton.setFont(
@@ -41,8 +41,8 @@ class CentralBox(QWidget):
         info_box.setLayout(info_layout)
         self.main_layout.addWidget(info_box, 0, 5, 4, 3)
 
-    def create_widget(self):
-        """create_widget docstring."""
+    def CreateWidget(self):
+        """CreateWidget docstring."""
         cert_num_label = QLabel("证书编号")
         device_serial_label = QLabel("出厂编号")
         manufacturer_label = QLabel("制造厂家")
@@ -104,7 +104,7 @@ class CentralBox(QWidget):
         self.main_layout.addWidget(widget_box, 1, 1, 12, 4)
         return line_box
 
-    def stretch_set(self):
+    def StretchSet(self):
         """StretchSet docstring."""
         self.main_layout.setColumnStretch(0, 0.5)
         self.main_layout.setColumnStretch(1, 2)

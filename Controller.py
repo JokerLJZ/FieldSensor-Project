@@ -1,6 +1,5 @@
 """"Using visa manipulate the antenna controller. """
 
-import logging
 import traceback
 import time
 import visa
@@ -10,7 +9,7 @@ __author__ = 'TheJoker'
 
 class Controller(object):
 
-    def __init__(self, ctaddr=10, resourcemanager=None):
+    def __init__(self, ctaddr="GIB0::10::INSTR", resourcemanager=None):
         """Initial the antenna controller.
 
         ===============   =============================================
@@ -26,22 +25,12 @@ class Controller(object):
             self.rm = visa.ResourceManager()
         else:
             self.rm = resourcemanager
-        addr = "GPIB0::" + str(ctaddr) + "::INSTR"
         try:
-            self.CT2090 = self.rm.open_resource(addr)
+            self.CT2090 = self.rm.open_resource(ctaddr)
             self.CTWrite('N2;CL 0;WL 360')
             self.angle = self.CTReadAngel()
         finally:
-            self.logger.error(traceback.format_exc())
-
-    def Log(self):
-        """Initialise the log function."""
-        self.logger = logging.getLogger()
-        handler = logging.FileHandler("Data\\TestLog.log")
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s -%(message)s")
-        handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
+            print("转台控制器连接错误, 请进行系统检查!")
 
     def CTQuery(self, order):
         return self.CT2090.query(order)

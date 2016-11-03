@@ -1,8 +1,8 @@
 """"Using visa manipulate the 8257D signal generator. """
 
-import visa
-import logging
 import traceback
+
+import visa
 
 __author__ = 'TheJoker'
 
@@ -10,7 +10,7 @@ __author__ = 'TheJoker'
 class SG8257D(object):
     "All unit input is MHz and dBm."
 
-    def __init__(self, sgaddr=19, resourcemanager=None):
+    def __init__(self, sgaddr="GIB0::19::INSTR", resourcemanager=None):
         """Initial the signal generator.
 
         ===============   =============================================
@@ -26,22 +26,11 @@ class SG8257D(object):
             self.rm = visa.ResourceManager()
         else:
             self.rm = resourcemanager
-        address = "GPIB0::" + str(sgaddr) + "::INSTR"
-        self.Log()
         try:
-            self.sg = self.rm.open_resource(address)
+            self.sg = self.rm.open_resource(sgaddr)
             self.SGWrite('*RST')
         finally:
-            self.logger.error(traceback.format_exc())
-
-    def Log(self):
-        """Initialise the log function."""
-        self.logger = logging.getLogger()
-        handler = logging.FileHandler("Data\\TestLog.log")
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s -%(message)s")
-        handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
+            print("8257D信号源连接错误, 请进行系统检查!")
 
     def SGState(self):
         idn = self.sg.query('*IDN?')
@@ -136,9 +125,6 @@ if __name__ == '__main__':
     import visa
     rm = visa.ResourceManager()
     SGAddr = 'GPIB0::19::INSTR'
-    sg8257 = rm.open_resource(SGAddr)
-    sg8257.write(':OUTP ON')
-    sg8257.close()
     SG = SG8257D(SGAddr, rm)
     print(SG.SGQuery('*IDN?'))
     freq = 1.5

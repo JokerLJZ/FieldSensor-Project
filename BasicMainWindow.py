@@ -82,7 +82,7 @@ class MainWindow(QMainWindow):
         self.dbname = cert_num + device_serial + custom_name
         db = Access("TestResult\\DataBase\\%s.accdb" % self.dbname)
         basicdb = Access("Data\\BasicInfo.accdb")
-        db.CreateSerial(datetime)
+        # db.CreateSerial(datetime)
         namelist = basicdb.cursor.execute(
             "SELECT * FROM Infoname").fetchall()
         try:
@@ -94,6 +94,7 @@ class MainWindow(QMainWindow):
             tablename="TestInfo", columnnamelist=namelist,
             typelist=(["VARCHAR 30"] * namelist.__len__()))
         self.InsertDbInfo(db=db)
+        # db.ConnClose()
 
     def InsertDbInfo(self, db=None):
         basicdb = Access("/Data/BasicInfo.accdb")

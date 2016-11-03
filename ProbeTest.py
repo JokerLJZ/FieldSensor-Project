@@ -1,24 +1,29 @@
 """The field sensor probe test programme. All units is Mhz and dBm."""
 
-import logging
-import traceback
 import time
+import traceback
+
 import visa
+from PyQt5.QtWidgets import QApplication, QInputDialog, QMessageBox
+
 from Access import Access
-from SG8257D import SG8257D as SGHigh
+from Controller import Controller as CT
+from CoupleNew import CalHighFreq
+from ETSProbe import ETSProbe
 from PABonn import PABonn as PAHigh
 from PMNRP import PMNRP as PM
-from CoupleNew import CalHighFreq
-from Controller import Controller as CT
-from PyQt5.QtWidgets import QMessageBox, QApplication, QInputDialog
-from ETSProbe import ETSProbe
+from SG8257D import SG8257D as SGHigh
 
 
 class ProbeTest(object):
     """Define a test class."""
-    def __init__(self, dbname="TestDB", probetype=None,
-                 highsgaddr=19, highpaaddr=7, ctaddr=10,
-                 pmhighaddr='RSNRP::0x0003::102279::INSTR'):
+
+    def __init__(
+            self, dbname="TestDB", probetype=None,
+            highsgaddr="GIB0::19::INSTR",
+            highpaaddr="GIB0::7::INSTR",
+            ctaddr="GIB0::10::INSTR",
+            pmhighaddr='RSNRP::0x0003::102279::INSTR'):
         """initialise the test class."""
         self.rm = visa.ResourceManager()
         self.highsgaddr = highsgaddr
@@ -26,21 +31,11 @@ class ProbeTest(object):
         self.ctaddr = ctaddr
         self.pmhighaddr = pmhighaddr
         self.probetype = probetype
-        self.Log()
         dbname = "\\TestResult\\Database\\" + dbname + ".accdb"
         dbinfoname = "\\Data\\BasicInfo.accdb"
         self.db = Access(dbname)
         self.info = Access(dbinfoname)
         self.serial = self.db.CreateSerial()
-
-    def Log(self):
-        """Initialise the log function."""
-        self.logger = logging.getLogger()
-        handler = logging.FileHandler("Data\\TestLog.log")
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s -%(message)s")
-        handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
 
     def ProbeTestHighFreq(self, freq=1000, fieldintensity=10, dist=0.7):
         """The high frequency foundermental probe test procedure.
@@ -141,7 +136,6 @@ class ProbeTest(object):
             target=powertarget, freq=freq, sg=sg, pa=pa, pm=pm)
         value = list(self.ReadValue())
 
-
     def FreqResHighFreq(self, freq=None, field=None):
         """Test the frequency response of probe in specific frequency and
            field intensity.
@@ -236,15 +230,6 @@ class ProbeTest(object):
 if __name__ == "__main__":
     import sys
     app = QApplication(sys.argv)
-    try:
-        test = ProbeTest()
-        test.FieldTestHighFreq([10, 20], [20, 34])
-        # test.ProbeTestHighFreq(freq=18000, fieldintensity=10, dist=0.7)
-    except:
-        logger = logging.getLogger()
-        handler = logging.FileHandler("Data\\TestLog.log")
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s -%(message)s")
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
-        logger.error(traceback.format_exc())
+    test = ProbeTest()
+    test.FieldTestHighFreq([10, 20], [20, 34])
+    # test.ProbeTestHighFreq(freq=18000, fieldintensity=10, dist=0.7)

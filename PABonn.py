@@ -10,7 +10,7 @@ __author__ = "Joker.Liu"
 class PABonn(object):
     """Create a power amplifier object of Bonn."""
 
-    def __init__(self, paaddr=7, resourcemanager=None):
+    def __init__(self, paaddr="GIB0::7::INSTR", resourcemanager=None):
         """Initial the bonn power amplifier.
 
         ===============   =============================================
@@ -26,12 +26,10 @@ class PABonn(object):
             self.rm = visa.ResourceManager()
         else:
             self.rm = resourcemanager
-        address = "GPIB0::" + str(paaddr) + "::INSTR"
-        self.Log()
         try:
-            self.pa = self.rm.open_resource(address)
+            self.pa = self.rm.open_resource(paaddr)
         finally:
-            self.logger.error(traceback.format_exc())
+            print("BONN功放连接失败, 请进行系统检查!")
 
     def Log(self):
         """Initialise the log function."""

@@ -1,7 +1,14 @@
+# -*-coding:utf-8 -*-
+import io
+import os
+import sys
+
+import win32com.client
+
+# 改变标准输出的默认编码
+# sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')
 """A MicroSoft Office word class."""
 
-import os
-import win32com.client
 
 __author__ = 'JokerLiu'
 
@@ -133,6 +140,7 @@ class Word(object):
 
 if __name__ == "__main__":
     word = Word(report=True)
+    print("中文")
     # word.TableContent(2, 4, 1, "测试")
     # word.TableAddRow(2, 10)
     # word.CellDownMerge(2, 2, 1, 1)

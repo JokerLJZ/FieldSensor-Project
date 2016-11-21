@@ -1,9 +1,10 @@
 """The field sensor probe test programme. All units is Mhz and dBm."""
 
+import threading
 import time
-import traceback
 
 import visa
+from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QInputDialog, QMessageBox
 
 from Access import Access
@@ -15,27 +16,50 @@ from PMNRP import PMNRP as PM
 from SG8257D import SG8257D as SGHigh
 
 
-class ProbeTest(object):
+class ProbeTest(QThread):
     """Define a test class."""
+    _messagesignal = pyqtSignal(threading.Event, str)
 
     def __init__(
-            self, dbname="TestDB", probetype=None,
+            self, dbname="TestDB",
+            isisotropy=False,
+            freqselect=True,
+            freqres=True,
+            probetype=None,
             highsgaddr="GIB0::19::INSTR",
             highpaaddr="GIB0::7::INSTR",
             ctaddr="GIB0::10::INSTR",
             pmhighaddr='RSNRP::0x0003::102279::INSTR'):
         """initialise the test class."""
+        super(ProbeTest, self).__init__()
         self.rm = visa.ResourceManager()
         self.highsgaddr = highsgaddr
         self.highpaaddr = highpaaddr
         self.ctaddr = ctaddr
         self.pmhighaddr = pmhighaddr
         self.probetype = probetype
-        dbname = "\\TestResult\\Database\\" + dbname + ".accdb"
-        dbinfoname = "\\Data\\BasicInfo.accdb"
-        self.db = Access(dbname)
-        self.info = Access(dbinfoname)
+        self.isisotropy = isisotropy
+        self.freqselect = freqselect
+        self.dbname = "\\TestResult\\Database\\" + dbname + ".accdb"
+        self.dbinfoname = "\\Data\\BasicInfo.accdb"
+
+    def run(self):
+        self.ThreadMessage("即将开始运行测试程序")
+        self.db = Access(self.dbname)
+        self.info = Access(self.dbinfoname)
         self.serial = self.db.CreateSerial()
+        self.db.ConnClose()
+        self.info.ConnClose()
+
+    def TestProcedure(self):
+        pass
+
+    def ThreadMessage(self, message=None):
+        event = threading.Event()
+        self._messagesignal.emit(
+            event, "%s" % message)
+        event.wait()
+        event.clear()
 
     def ProbeTestHighFreq(self, freq=1000, fieldintensity=10, dist=0.7):
         """The high frequency foundermental probe test procedure.
@@ -54,10 +78,8 @@ class ProbeTest(object):
         pm = PM(self.pmhighaddr, self.rm)
         ct = CT(self.ctaddr, self.rm)
         couple = CalHighFreq(freq / 1e3, fieldintensity, dist)
-        QMessageBox.information(
-            None, "提示", "请连接好电场探头")
-        QMessageBox.information(
-            None, "提示", "请连接%s天线进行测试" % couple["Antenna"])
+        self.ThreadMessage("请连接好电场探头")
+        self.ThreadMessage("请连接%s天线进行测试" % couple["Antenna"])
         ct.CTAntennaRoll(couple["Antenna"])
         powertarget = couple["PowerMeter"]
         self.PowerIter(target=powertarget, freq=freq, sg=sg, pa=pa, pm=pm)

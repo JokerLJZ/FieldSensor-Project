@@ -142,7 +142,8 @@ class FSPrintDialog(PrintDialog):
             self.device_serial_lineedit]
         for i in range(len(infobox)):
             infobox[i].setText(info[i])
-        date = db.cursor.execute("SELECT TestDate FROM TestDate").fetchone()[0]
+        date = db.cursor.execute(
+            "SELECT TestDate FROM TestDate").fetchone()[0]
         self.date_lineedit.setDate(date)
         db.ConnClose()
         self.dbname = self.list_box.currentItem().text()

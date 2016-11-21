@@ -40,11 +40,11 @@ class FSMainWindow(MainWindow):
 
     def start(self):
         """start docstring."""
-        self.test_dialog = FSTestDialog()
+        self.CreateDb()
+        self.test_dialog = FSTestDialog(dbname=self.dbname)
         self.central_box.start_test_pushbutton.setEnabled(False)
         self.test_dialog.closeEvent = self.close_event
         self.test_dialog.show()
-        self.CreateDb()
 
     def InsertDbInfo(self, db=None):
         lineeditlist = [

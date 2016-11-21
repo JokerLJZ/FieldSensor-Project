@@ -82,7 +82,10 @@ class MainWindow(QMainWindow):
         self.dbname = cert_num + device_serial + custom_name
         db = Access("TestResult\\DataBase\\%s.accdb" % self.dbname)
         basicdb = Access("Data\\BasicInfo.accdb")
-        # db.CreateSerial(datetime)
+        if db.IsTableExist("TestDate"):
+            pass
+        else:
+            db.CreateSerial(datetime)
         namelist = basicdb.cursor.execute(
             "SELECT * FROM Infoname").fetchall()
         try:
@@ -94,6 +97,7 @@ class MainWindow(QMainWindow):
             tablename="TestInfo", columnnamelist=namelist,
             typelist=(["VARCHAR 30"] * namelist.__len__()))
         self.InsertDbInfo(db=db)
+        print("done")
         # db.ConnClose()
 
     def InsertDbInfo(self, db=None):
@@ -107,11 +111,11 @@ class MainWindow(QMainWindow):
 
     def start(self):
         """start docstring."""
-        self.test_dialog = TestDialog()
+        self.CreateDb()
+        self.test_dialog = TestDialog(dbname=self.dbname)
         self.central_box.start_test_pushbutton.setEnabled(False)
         self.test_dialog.closeEvent = self.close_event
         self.test_dialog.show()
-        # self.CreateDb()
 
     def close_event(self, event):
         """close_event docstring."""

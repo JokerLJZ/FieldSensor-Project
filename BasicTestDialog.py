@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import threading
 from PyQt5 import QtCore, QtGui
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTextEdit
 from PyQt5.QtGui import QIcon, QPixmap, QPalette, QBrush
 
@@ -17,9 +19,10 @@ class EmittingStream(QtCore.QObject):
 class TestDialog(QDialog):
     """class docstring."""
 
-    def __init__(self):
+    def __init__(self, dbname=None):
         """__init__ docstring."""
         super(TestDialog, self).__init__()
+        self.dbname = dbname
         self.setWindowTitle("测试程序")
         self.setWindowIcon(QIcon("images/WindowIcon.png"))
         self.setAutoFillBackground(True)
@@ -33,6 +36,12 @@ class TestDialog(QDialog):
         sys.stdout = EmittingStream(textWritten=self.normalOutputWritten)
         sys.stder = EmittingStream(textWritten=self.normalOutputWritten)
         self.closeEvent = self.CloseEvent
+
+    @pyqtSlot(threading.Event, str)
+    def SetThread(self, event, message):
+        QMessageBox.information(
+            None, "提示", "%s" % message)
+        event.set()
 
     def CloseEvent(self, event):
         sys.stdout = sys.__stdout__

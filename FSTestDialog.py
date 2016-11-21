@@ -7,11 +7,16 @@ You could read the sorce code of this programme.
 Commercial use was not allowed.
 """
 
+import threading
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit,
-                             QPushButton, QRadioButton, QTextEdit, QVBoxLayout)
+                             QPushButton, QRadioButton, QTextEdit, QVBoxLayout,
+                             QMessageBox)
 
 from Access import Access
-from BasicTestDialog import TestDialog, EmittingStream
+from BasicTestDialog import EmittingStream, TestDialog
+
+from ProbeTest import ProbeTest
 
 __author__ = "Joker.Liu"
 
@@ -23,9 +28,10 @@ class FSTestDialog(TestDialog):
     The test dialog include the test option of the test programme.
     """
 
-    def __init__(self):
+    def __init__(self, dbname=None):
         """Initial the setting dialog with modal mode."""
-        super(FSTestDialog, self).__init__()
+        super(FSTestDialog, self).__init__(dbname=dbname)
+        self.dbname = dbname
 
     def InitDialog(self):
         """init_dialog docstring."""
@@ -391,16 +397,33 @@ class FSTestDialog(TestDialog):
             self.intensity_lineedit_box[i].clear()
 
     def StartTest(self):
-        import time
         intensity = [
             obj.text() for obj in self.intensity_lineedit_box
             if obj.text().__len__() > 0]
         frequency = [
             obj.text() for obj in self.freq_lineedit_box
             if obj.text().__len__() > 0]
+        print(intensity, frequency)
         self.start_test_button.setEnabled(False)
         self.stop_test_button.setEnabled(True)
+        # True is isotropy, False is not isotropy
+        isisotropy = self.isotropy_true_radiobutton.isChecked()
+        # True is high frequency, Flase is low frequency
+        freqselect = self.high_freq_radiobutton.isChecked()
+        # True is frequency response, False is linearity
+        freqres = self.intens_freres_mode.isChecked()
+        self.test = ProbeTest(
+            dbname=self.dbname, isisotropy=isisotropy,
+            freqselect=freqselect, freqres=freqres)
+        self.test._messagesignal.connect(self.SetThread)
+        self.test.start()
 
     def StopTest(self):
         self.start_test_button.setEnabled(True)
         self.stop_test_button.setEnabled(False)
+
+    @pyqtSlot(threading.Event, str)
+    def SetThread(self, event, s):
+        QMessageBox.information(
+            None, "提示", "%s" % s)
+        event.set()

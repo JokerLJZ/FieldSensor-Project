@@ -201,7 +201,17 @@ class Access(object):
 
 
 if __name__ == "__main__":
-    db = Access("/TestResult/Database/__.accdb")
-    print(db.CreateSerial())
-    sql = ""
-    db.Execute(sql)
+    db = Access("/TestResult/Database/TestDB.accdb")
+    column = ("Frequency__MHz, Field__V_per_m, FieldResult__V_per_m,"
+              " TestSeries")
+    db.CreateTable(
+        tablename="场强线性度",
+        columnnamelist=column.split(", "),
+        typelist=["DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE"])
+    serial = db.CreateSerial()
+    db.cursor.execute(
+        "INSERT INTO 场强线性度 (%s) VALUES (%f, %f, %f, %f)"
+        % (column, "1800.0", "20.0", 21.0, serial))
+    db.Commit()
+    # sql = ""
+    # db.Execute(sql)

@@ -21,6 +21,9 @@ class EmittingStream(QtCore.QObject):
     def write(self, text):
         self.textWritten.emit(str(text))
 
+    def flush(self):
+        pass
+
 
 class PrintDialog(QDialog):
     """class string."""

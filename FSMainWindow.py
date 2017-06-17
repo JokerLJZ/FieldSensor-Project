@@ -6,13 +6,13 @@ Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
 You could read the sorce code of this programme.
 Commercial use was not allowed.
 """
+from Access import Access
 # -*- coding: utf-8 -*-
 from BasicMainWindow import MainWindow
 from FSCentralBox import FSCentralBox
-from FSSettingDialog import FSSettingDialog
 from FSPrintDialog import FSPrintDialog
+from FSSettingDialog import FSSettingDialog
 from FSTestDialog import FSTestDialog
-from Access import Access
 
 __author__ = "Joker.Liu"
 

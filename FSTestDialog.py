@@ -6,16 +6,17 @@ Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
 You could read the sorce code of this programme.
 Commercial use was not allowed.
 """
-
+import time
 import threading
-from PyQt5.QtCore import pyqtSlot
+
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtGui import QDoubleValidator
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit,
-                             QPushButton, QRadioButton, QTextEdit, QVBoxLayout,
-                             QMessageBox)
+                             QMessageBox, QPushButton, QRadioButton, QTextEdit,
+                             QVBoxLayout, QInputDialog)
 
 from Access import Access
 from BasicTestDialog import EmittingStream, TestDialog
-
 from ProbeTest import ProbeTest
 
 __author__ = "Joker.Liu"
@@ -27,6 +28,7 @@ class FSTestDialog(TestDialog):
 
     The test dialog include the test option of the test programme.
     """
+    _valuesentsignal = pyqtSignal(float)
 
     def __init__(self, dbname=None):
         """Initial the setting dialog with modal mode."""
@@ -45,24 +47,27 @@ class FSTestDialog(TestDialog):
         test_box = self.CreateTestBox()
         isotropy_select_box = self.CreateIsotropySelectBox()
         instrument_addr_box = self.CreateInstrumentAddrBox()
+        probe_type_box = self.CreateProbeTypeBox()
         self.main_layout.addWidget(freq_select_box, 0, 0, 1, 2)
         self.main_layout.addWidget(freq_mode_box, 1, 0, 1, 2)
-        self.main_layout.addWidget(freq_disp_box, 0, 4, 2, 4)
-        self.main_layout.addWidget(intensity_disp_box, 0, 8, 2, 4)
+        self.main_layout.addWidget(freq_disp_box, 0, 4, 3, 4)
+        self.main_layout.addWidget(intensity_disp_box, 0, 8, 3, 4)
+        self.main_layout.addWidget(probe_type_box, 2, 0, 1, 2)
         self.main_layout.addWidget(isotropy_select_box, 0, 2, 1, 2)
         self.main_layout.addWidget(intens_mode_box, 1, 2, 1, 2)
-        self.main_layout.addWidget(test_box, 2, 12, 4, 4)
-        self.main_layout.addWidget(textedit_box, 2, 0, 4, 12)
-        self.main_layout.addWidget(instrument_addr_box, 0, 12, 2, 4)
+        self.main_layout.addWidget(test_box, 3, 12, 6, 4)
+        self.main_layout.addWidget(textedit_box, 3, 0, 4, 12)
+        self.main_layout.addWidget(instrument_addr_box, 0, 12, 3, 4)
         self.StretchSet()
         self.setLayout(self.main_layout)
 
     def StretchSet(self):
         """StretchSet docstring."""
-        self.setMinimumHeight(710)
+        self.setMinimumHeight(580)
         self.main_layout.setRowStretch(0, 1)
         self.main_layout.setRowStretch(1, 1)
-        self.main_layout.setRowStretch(2, 4)
+        self.main_layout.setRowStretch(2, 1)
+        self.main_layout.setRowStretch(3, 4)
 
     def CreateTextEditBox(self):
         textedit = QTextEdit()
@@ -92,6 +97,7 @@ class FSTestDialog(TestDialog):
 
     def CreateFreqSelectBox(self):
         """CreateFreqSelectBox docstring."""
+
         self.high_freq_radiobutton = QRadioButton("1GHz-18GHz", self)
         self.low_freq_radiobutton = QRadioButton("10MHz-1GHz", self)
         self.high_freq_radiobutton.setChecked(True)
@@ -132,14 +138,14 @@ class FSTestDialog(TestDialog):
     def SelectIsotropy(self):
         self.freq_norm_mode.setEnabled(False)
         self.freq_ets_mode.setEnabled(False)
-        self.freq_opt_mode.setEnabled(False)
+        # self.freq_opt_mode.setEnabled(False)
         self.low_freq_radiobutton.disconnect()
         self.low_freq_radiobutton.clicked.connect(self.SetIsotropy)
         self.high_freq_radiobutton.disconnect()
         self.high_freq_radiobutton.clicked.connect(self.SetIsotropy)
-        self.intens_freres_mode.setEnabled(False)
+        self.intens_freqres_mode.setEnabled(False)
         self.intens_linear_mode.setEnabled(False)
-        self.intens_opt_mode.setEnabled(False)
+        # self.intens_opt_mode.setEnabled(False)
         for obj in self.freq_lineedit_box:
             obj.clear()
             obj.setEnabled(False)
@@ -160,16 +166,16 @@ class FSTestDialog(TestDialog):
     def UnSelectedIsotropy(self):
         self.freq_norm_mode.setEnabled(True)
         self.freq_ets_mode.setEnabled(True)
-        self.freq_opt_mode.setEnabled(True)
+        # self.freq_opt_mode.setEnabled(True)
         self.low_freq_radiobutton.disconnect()
         self.low_freq_radiobutton.clicked.connect(self.FreqSelMode)
         self.low_freq_radiobutton.clicked.connect(self.IntensSelMode)
         self.high_freq_radiobutton.disconnect()
         self.high_freq_radiobutton.clicked.connect(self.FreqSelMode)
         self.high_freq_radiobutton.clicked.connect(self.IntensSelMode)
-        self.intens_freres_mode.setEnabled(True)
+        self.intens_freqres_mode.setEnabled(True)
         self.intens_linear_mode.setEnabled(True)
-        self.intens_opt_mode.setEnabled(True)
+        # self.intens_opt_mode.setEnabled(True)
         for obj in self.freq_lineedit_box:
             obj.setEnabled(True)
         for obj in self.intensity_lineedit_box:
@@ -202,45 +208,129 @@ class FSTestDialog(TestDialog):
 
     def CreateIntensityModeBox(self):
         """CreateFreqModeBox."""
-        self.intens_linear_mode = QRadioButton("线性度场强")
-        self.intens_freres_mode = QRadioButton("频率响应场强")
-        self.intens_opt_mode = QRadioButton("自定义场强")
+        self.intens_linear_mode = QRadioButton("线性度")
+        self.intens_freqres_mode = QRadioButton("频率响应")
+        # self.intens_opt_mode = QRadioButton("自定义场强")
         self.intens_linear_mode.setChecked(True)
         self.intens_linear_mode.clicked.connect(
             lambda *args: self.IntensSelMode())
-        self.intens_freres_mode.clicked.connect(
+        self.intens_freqres_mode.clicked.connect(
             lambda *args: self.IntensSelMode())
-        self.intens_opt_mode.clicked.connect(
-            lambda *args: self.IntensSelMode())
+        # self.intens_opt_mode.clicked.connect(
+        # lambda *args: self.IntensSelMode())
         intens_mode_layout = QVBoxLayout()
         intens_mode_layout.addWidget(self.intens_linear_mode)
-        intens_mode_layout.addWidget(self.intens_freres_mode)
-        intens_mode_layout.addWidget(self.intens_opt_mode)
-        intens_mode_box = QGroupBox("场强设置")
+        intens_mode_layout.addWidget(self.intens_freqres_mode)
+        # intens_mode_layout.addWidget(self.intens_opt_mode)
+        intens_mode_box = QGroupBox("测试模式设置")
         intens_mode_box.setMaximumWidth(110)
         intens_mode_box.setLayout(intens_mode_layout)
 
         return intens_mode_box
 
+    def CreateProbeTypeBox(self):
+        """CreateProbeTypeBox."""
+        self.ets_mode = QRadioButton("ETS自动读数")
+        self.manual_mode = QRadioButton("手动读数")
+        self.manual_mode.setChecked(True)
+        probe_type_layout = QVBoxLayout()
+        probe_type_layout.addWidget(self.manual_mode)
+        probe_type_layout.addWidget(self.ets_mode)
+        probe_type_box = QGroupBox("探头模式")
+        probe_type_box.setMaximumWidth(110)
+        probe_type_box.setLayout(probe_type_layout)
+
+        return probe_type_box
+
+    def ProbeType(self):
+        """Return probe type."""
+        if self.manual_mode.isChecked():
+            probe_type = "Manual"
+        elif self.ets_mode.isChecked():
+            probe_type = "ETS"
+        else:
+            probe_type = "Manual"
+        return probe_type
+
     def CreateInstrumentAddrBox(self):
         """Create the inst visa address lineedit groupbox."""
+        basicinfo = Access("/Data/Basicinfo.accdb")
         high_sg_addr_label = QLabel("高频信号源")
-        self.high_sg_addr_lineedit = QLineEdit("GIB0::19::INSTR")
+        addr = basicinfo.cursor.execute(
+            "SELECT Address From InstrumentVisaAddr WHERE Instrument"
+            " = '高频信号源'").fetchone()[0]
+        self.high_sg_addr_lineedit = QLineEdit(addr)
         high_pa_addr_label = QLabel("高频功放")
-        self.high_pa_addr_lineedit = QLineEdit("GIB0::7::INSTR")
+        addr = basicinfo.cursor.execute(
+            "SELECT Address From InstrumentVisaAddr WHERE Instrument"
+            " = '高频功放'").fetchone()[0]
+        self.high_pa_addr_lineedit = QLineEdit(addr)
+        high_pm_addr_label = QLabel("高频功率计")
+        addr = basicinfo.cursor.execute(
+            "SELECT Address From InstrumentVisaAddr WHERE Instrument"
+            " = '高频功率计'").fetchone()[0]
+        self.high_pm_addr_lineedit = QLineEdit(addr)
         high_ct_addr_label = QLabel("暗室转台")
-        self.high_ct_addr_lineedit = QLineEdit("GIB0::10::INSTR")
-        inst_addr_lineedit_list = [
+        addr = basicinfo.cursor.execute(
+            "SELECT Address From InstrumentVisaAddr WHERE Instrument"
+            " = '暗室转台'").fetchone()[0]
+        self.high_ct_addr_lineedit = QLineEdit(addr)
+        low_sg_addr_label = QLabel("低频信号源")
+        addr = basicinfo.cursor.execute(
+            "SELECT Address From InstrumentVisaAddr WHERE Instrument"
+            " = '低频信号源'").fetchone()[0]
+        self.low_sg_addr_lineedit = QLineEdit(addr)
+        pa_250MHz_addr_label = QLabel("250MHz功放")
+        addr = basicinfo.cursor.execute(
+            "SELECT Address From InstrumentVisaAddr WHERE Instrument"
+            " = '250MHz功放'").fetchone()[0]
+        self.pa_250MHz_addr_lineedit = QLineEdit(addr)
+        pa_1GHz_addr_label = QLabel("1GHz功放")
+        addr = basicinfo.cursor.execute(
+            "SELECT Address From InstrumentVisaAddr WHERE Instrument"
+            " = '1GHz功放'").fetchone()[0]
+        self.pa_1GHz_addr_lineedit = QLineEdit(addr)
+        low_pm_addr_label = QLabel("低频功率计")
+        addr = basicinfo.cursor.execute(
+            "SELECT Address From InstrumentVisaAddr WHERE Instrument"
+            " = '低频功率计'").fetchone()[0]
+        self.low_pm_addr_lineedit = QLineEdit(addr)
+        zeta_addr_label = QLabel("电机COM口")
+        addr = basicinfo.cursor.execute(
+            "SELECT Address From InstrumentVisaAddr WHERE Instrument"
+            " = '电机COM口'").fetchone()[0]
+        self.zeta_addr_lineedit = QLineEdit(addr)
+        probe_addr_label = QLabel("探头COM口")
+        addr = basicinfo.cursor.execute(
+            "SELECT Address From InstrumentVisaAddr WHERE Instrument"
+            " = '探头COM口'").fetchone()[0]
+        self.probe_addr_lineedit = QLineEdit(addr)
+        self.save_instr_addr_button = QPushButton("保存仪表地址信息")
+        self.inst_addr_lineedit_list = [
             [high_sg_addr_label, self.high_sg_addr_lineedit],
             [high_pa_addr_label, self.high_pa_addr_lineedit],
-            [high_ct_addr_label, self.high_ct_addr_lineedit]]
+            [high_ct_addr_label, self.high_ct_addr_lineedit],
+            [high_pm_addr_label, self.high_pm_addr_lineedit],
+            [low_sg_addr_label, self.low_sg_addr_lineedit],
+            [pa_250MHz_addr_label, self.pa_250MHz_addr_lineedit],
+            [pa_1GHz_addr_label, self.pa_1GHz_addr_lineedit],
+            [low_pm_addr_label, self.low_pm_addr_lineedit],
+            [zeta_addr_label, self.zeta_addr_lineedit],
+            [probe_addr_label, self.probe_addr_lineedit],
+        ]
         inst_addr_box = QGroupBox("仪表连接地址")
         inst_layout = QGridLayout()
-        for obj in inst_addr_lineedit_list:
-            index = inst_addr_lineedit_list.index(obj)
+        for obj in self.inst_addr_lineedit_list:
+            index = self.inst_addr_lineedit_list.index(obj)
             inst_layout.addWidget(obj[0], index, 0, 1, 1)
             inst_layout.addWidget(obj[1], index, 1, 1, 1)
+        inst_layout.addWidget(
+            self.save_instr_addr_button,
+            len(self.inst_addr_lineedit_list), 1, 1, 1)
         inst_addr_box.setLayout(inst_layout)
+        self.save_instr_addr_button.clicked.connect(
+            self.SaveInstrAddr)
+        basicinfo.ConnClose()
         return inst_addr_box
 
     def CreateFreqDispBox(self):
@@ -262,6 +352,7 @@ class FSTestDialog(TestDialog):
         freq_disp_box = QGroupBox("频率设置")
         freq_disp_layout = QGridLayout()
         freq_disp_box.setLayout(freq_disp_layout)
+
         self.freq_lineedit_box = [
             freq_lineedit1, freq_lineedit2,
             freq_lineedit3, freq_lineedit4,
@@ -270,7 +361,9 @@ class FSTestDialog(TestDialog):
             freq_lineedit9, freq_lineedit10,
             freq_lineedit11, freq_lineedit12,
             freq_lineedit13, freq_lineedit14]
+        validator = QDoubleValidator()
         for i in self.freq_lineedit_box:
+            i.setValidator(validator)
             freq_disp_layout.addWidget(i, self.freq_lineedit_box.index(i), 1)
         freq_label_seq = [QLabel("频率" + str(i)) for i in range(1, 15)]
         for i in freq_label_seq:
@@ -365,8 +458,8 @@ class FSTestDialog(TestDialog):
         basicinfo = Access("//Data//BasicInfo.accdb")
         mode_checkbox = [
             self.intens_linear_mode.isChecked(),
-            self.intens_freres_mode.isChecked(),
-            self.intens_opt_mode.isChecked()]
+            self.intens_freqres_mode.isChecked()]
+        # self.intens_opt_mode.isChecked()]
         intens_checkbox = [
             self.high_freq_radiobutton.isChecked(),
             self.low_freq_radiobutton.isChecked()]
@@ -398,12 +491,11 @@ class FSTestDialog(TestDialog):
 
     def StartTest(self):
         intensity = [
-            obj.text() for obj in self.intensity_lineedit_box
+            float(obj.text()) for obj in self.intensity_lineedit_box
             if obj.text().__len__() > 0]
         frequency = [
-            obj.text() for obj in self.freq_lineedit_box
+            float(obj.text()) for obj in self.freq_lineedit_box
             if obj.text().__len__() > 0]
-        print(intensity, frequency)
         self.start_test_button.setEnabled(False)
         self.stop_test_button.setEnabled(True)
         # True is isotropy, False is not isotropy
@@ -411,13 +503,44 @@ class FSTestDialog(TestDialog):
         # True is high frequency, Flase is low frequency
         freqselect = self.high_freq_radiobutton.isChecked()
         # True is frequency response, False is linearity
-        freqres = self.intens_freres_mode.isChecked()
+        freqres = self.intens_freqres_mode.isChecked()
+        # Manual is manual mode ETS is ETS mode
+        probetype = self.ProbeType()
+        print(probetype)
         self.test = ProbeTest(
             dbname=self.dbname, isisotropy=isisotropy,
-            freqselect=freqselect, freqres=freqres)
+            freqselect=freqselect, freqres=freqres,
+            probetype=probetype,
+            frequency=frequency, intensity=intensity,
+            highsgaddr=self.high_sg_addr_lineedit.text(),
+            highpaaddr=self.high_pa_addr_lineedit.text(),
+            ctaddr=self.high_ct_addr_lineedit.text(),
+            pmhighaddr=self.high_pm_addr_lineedit.text(),
+            lowsgaddr=self.low_pm_addr_lineedit.text(),
+            pa250MHzaddr=self.pa_250MHz_addr_lineedit.text(),
+            pa1GHzaddr=self.pa_1GHz_addr_lineedit.text(),
+            pmlowaddr=self.low_pm_addr_lineedit.text(),
+            probeaddr=self.probe_addr_lineedit.text(),
+            zetaaddr=self.zeta_addr_lineedit.text())
         self.test._messagesignal.connect(self.SetThread)
+        self.test._valuedialogsignal.connect(self.SetThreadValueDialog)
+        self.test._testcompletesignal.connect(self.StopTest)
+        self._valuesentsignal.connect(self.test.GetValue)
         self.test.start()
 
+    def SaveInstrAddr(self):
+        basicinfo = Access("/Data/Basicinfo.accdb")
+        for obj in self.inst_addr_lineedit_list:
+            name = obj[0].text()
+            addr = obj[1].text()
+            sql = (
+                "UPDATE InstrumentVisaAddr SET Address = '%s' "
+                "WHERE Instrument = '%s'" % (addr, name))
+            basicinfo.Execute(sql)
+        print("仪表地址信息已保存")
+        basicinfo.ConnClose()
+
+    @pyqtSlot()
     def StopTest(self):
         self.start_test_button.setEnabled(True)
         self.stop_test_button.setEnabled(False)
@@ -427,3 +550,21 @@ class FSTestDialog(TestDialog):
         QMessageBox.information(
             None, "提示", "%s" % s)
         event.set()
+
+    @pyqtSlot(threading.Event)
+    def SetThreadValueDialog(self, event):
+        value, ok1 = QInputDialog.getDouble(
+            None, "标题", "场强值:", value=0, min=0, max=1000, decimals=2)
+        self._valuesentsignal.emit(value)
+        event.set()
+        return value
+
+
+if __name__ == '__main__':
+    import sys
+    from PyQt5.QtWidgets import QApplication
+
+    app = QApplication(sys.argv)
+    mainWin = FSTestDialog("TestDB")
+    mainWin.show()
+    sys.exit(app.exec_())

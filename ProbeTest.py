@@ -4,6 +4,7 @@ import threading
 import time
 
 import visa
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QInputDialog, QMessageBox
 
@@ -19,40 +20,91 @@ from SG8257D import SG8257D as SGHigh
 class ProbeTest(QThread):
     """Define a test class."""
     _messagesignal = pyqtSignal(threading.Event, str)
+    _valuedialogsignal = pyqtSignal(threading.Event)
+    _testcompletesignal = pyqtSignal()
 
     def __init__(
             self, dbname="TestDB",
+            frequency=[],
+            intensity=[],
             isisotropy=False,
             freqselect=True,
             freqres=True,
             probetype=None,
-            highsgaddr="GIB0::19::INSTR",
-            highpaaddr="GIB0::7::INSTR",
-            ctaddr="GIB0::10::INSTR",
-            pmhighaddr='RSNRP::0x0003::102279::INSTR'):
+            highsgaddr="GPIB0::19::INSTR",
+            highpaaddr="GPIB0::7::INSTR",
+            ctaddr="GPIB0::10::INSTR",
+            pmhighaddr="RSNRP::0x0003::102279::INSTR",
+            lowsgaddr="GPIB0::19::INST",
+            pa250MHzaddr="GPIB0::1::INST",
+            pa1GHzaddr="GPIB0::2::INST",
+            pmlowaddr="RSNRP::0x0021::101975::INSTR",
+            probeaddr="2",
+            zetaaddr="1"
+            ):
         """initialise the test class."""
         super(ProbeTest, self).__init__()
         self.rm = visa.ResourceManager()
+        print("当前的探头读数模式为%s" % probetype)
+        # print("频率点为%s" % frequency)
+        # print("当前高频信号源VISA地址为%s" % highsgaddr)
+        # print("当前高频转台VISA地址为%s" % ctaddr)
+        # print("当前高频功放VISA地址为%s" % highpaaddr)
+        # print("当前高频功率计VISA地址为%s" % pmhighaddr)
+        self.frequency = frequency
+        self.intensity = intensity
         self.highsgaddr = highsgaddr
         self.highpaaddr = highpaaddr
         self.ctaddr = ctaddr
         self.pmhighaddr = pmhighaddr
+        self.lowsgaddr = lowsgaddr
+        self.pa250MHzaddr = pa250MHzaddr
+        self.pa1GHzaddr = pa1GHzaddr
+        self.pmlowaddr = pmlowaddr
         self.probetype = probetype
         self.isisotropy = isisotropy
         self.freqselect = freqselect
+        self.freqres = freqres
         self.dbname = "\\TestResult\\Database\\" + dbname + ".accdb"
         self.dbinfoname = "\\Data\\BasicInfo.accdb"
-
-    def run(self):
-        self.ThreadMessage("即将开始运行测试程序")
         self.db = Access(self.dbname)
         self.info = Access(self.dbinfoname)
         self.serial = self.db.CreateSerial()
+
+    def run(self):
+        self.ThreadMessage("即将开始运行测试程序")
+        self.TestProcedure()
         self.db.ConnClose()
         self.info.ConnClose()
+        self._testcompletesignal.emit()
 
     def TestProcedure(self):
-        pass
+        print("进入测试步骤选择")
+        time.sleep(1)
+        if self.freqselect is True and self.isisotropy is True:
+            # print("选择高频全向性")
+            time.sleep(1)
+            self.IsotropyHighFreq()
+        elif self.freqselect is False and self.isisotropy is True:
+            # print("选择低频全向性")
+            time.sleep(1)
+            self.IsotropyLowFreq()
+        elif self.freqselect is True and self.freqres is True:
+            # print("选择高频频率响应")
+            time.sleep(1)
+            self.FreqResHighFreq()
+        elif self.freqselect is False and self.freqres is True:
+            # print("选择低频频率响应")
+            time.sleep(1)
+            self.FreqResLowFreq()
+        elif self.freqselect is True and self.freqres is False:
+            # print("选择高频线性度")
+            time.sleep(1)
+            self.LinearityHighFreq(self.frequency, self.intensity)
+        elif self.freqselect is False and self.freqres is False:
+            # print("选择低频线性度")
+            time.sleep(1)
+            self.LinearityLowFreq()
 
     def ThreadMessage(self, message=None):
         event = threading.Event()
@@ -61,37 +113,24 @@ class ProbeTest(QThread):
         event.wait()
         event.clear()
 
-    def ProbeTestHighFreq(self, freq=1000, fieldintensity=10, dist=0.7):
-        """The high frequency foundermental probe test procedure.
+    def ThreadValueDialog(self):
+        event = threading.Event()
+        self._valuedialogsignal.emit(
+            event)
+        event.wait()
+        event.clear()
 
-        ===============   =====================================================
-        **Argument:**
-        freq              Defalt is 1000MHz.
-        fieldintensity    The field intensity of standard field, the unit
-                          is V/m.
-        dist              The distance of probe and the antenna, defalt is 0.7.
-        ===============   =====================================================
-        """
-        # Initial the instrument
-        sg = SGHigh(self.Highsgaddr, self.rm)
-        pa = PAHigh(self.Highpaaddr, self.rm)
-        pm = PM(self.pmhighaddr, self.rm)
-        ct = CT(self.ctaddr, self.rm)
-        couple = CalHighFreq(freq / 1e3, fieldintensity, dist)
-        self.ThreadMessage("请连接好电场探头")
-        self.ThreadMessage("请连接%s天线进行测试" % couple["Antenna"])
-        ct.CTAntennaRoll(couple["Antenna"])
-        powertarget = couple["PowerMeter"]
-        self.PowerIter(target=powertarget, freq=freq, sg=sg, pa=pa, pm=pm)
-        value = self.ReadValue()
-        sg.SGPowerOut("OFF")
-        pa.PAPowerOut("OFF")
-        sg.SGClose()
-        pa.PAClose()
-        pm.PMClose()
-        return value
+    def IsotropyLowFreq(self):
+        time.sleep(1)
+        print("现在即将进行低频全向性测试")
 
-    def LinearityHighFreq(self, freq=None, field=None):
+    def FreqResLowFreq(self):
+        print("现在即将进行低频频率响应测试")
+
+    def LinearityLowFreq(self):
+        print("现在即将进行低频线性度测试")
+
+    def LinearityHighFreq(self, freq=None, intens=None):
         """Test the Linearity of probe in specific frequency and field
            intensity.
 
@@ -99,27 +138,31 @@ class ProbeTest(QThread):
         **Argument:**
         freq              Defalt is None. freq should be a list if not will
                           raise a assertion error. Unit should be MHz.
-        field             Defalt is None, should be a list, if not will raise
+        intensity         Defalt is None, should be a list, if not will raise
                           a assertion error, the unit is V/m.
         ===============   =====================================================
         """
+        print("现在即将进行高频线性度测试")
+
         column = ("Frequency__MHz, Field__V_per_m, FieldResult__V_per_m,"
                   " TestSeries")
         self.db.CreateTable(
             tablename="场强线性度",
             columnnamelist=column.split(", "),
             typelist=["DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE"])
+        print(intens)
         assert type(freq) == list
-        assert type(field) == list
+        assert type(intens) == list
         for frequency in freq:
-            for intensity in field:
-                QMessageBox.information(
-                    None, "提示", "将要开始进行%sMHz强度%sV/m的测试"
-                    % (freq, intensity))
-                value = self.ProbeTestHighFreq(
-                    freq=frequency, fieldintensity=intensity)
+            for intensity in intens:
+                self.ThreadMessage(
+                    "将要开始进行%sMHz强度%sV/m的测试"
+                    % (frequency, intensity))
+                value = self.ReadValue()
+                # value = self.ProbeTestHighFreq(
+                #     freq=frequency, fieldintensity=intensity)
                 self.db.cursor.execute(
-                    "INSERT INTO 场强线性度 (%s) VALUES (%f, %f, %f, %d)"
+                    "INSERT INTO 场强线性度 (%s) VALUES (%f, %f, %f, %f)"
                     % (column, frequency, intensity, value, self.serial))
                 self.db.Commit()
 
@@ -135,6 +178,10 @@ class ProbeTest(QThread):
                           raise a assertion error, the unit is V/m.
         ===============   =====================================================
         """
+        print("现在即将进行高频全向性测试")
+        time.sleep(1)
+        return
+
         assert type(freq) is int or type(field) is float
         assert type(field) is int or type(field) is float
         column = ("Degree__°, Field__V_per_m, TestSeries")
@@ -170,6 +217,9 @@ class ProbeTest(QThread):
                           raise a assertion error, the unit is V/m.
         ===============   =====================================================
         """
+        print("现在即将进行高频频率响应测试")
+        return
+
         column = ("Frequency__MHz, Field__V_per_m, FieldResult__V_per_m,"
                   " TestSeries")
         self.db.CreateTable(
@@ -186,8 +236,49 @@ class ProbeTest(QThread):
                 % (column, frequency, field, value, self.serial))
             self.db.Commit()
 
-    def PowerIter(self, powertarget=None, freq=None,
-                  sg=None, pa=None, pm=None, highfreq=True):
+    def ProbeTestHighFreq(self, freq=1000, fieldintensity=10, dist=0.7):
+        """The high frequency foundermental probe test procedure.
+
+        ===============   =====================================================
+        **Argument:**
+        freq              Defalt is 1000MHz.
+        fieldintensity    The field intensity of standard field, the unit
+                          is V/m.
+        dist              The distance of probe and the antenna, defalt is 0.7.
+        ===============   =====================================================
+        """
+        print("现在即将进行高频频率响应测试")
+        return
+        # Initial the instrument
+        sg = SGHigh(self.Highsgaddr, self.rm)
+        pa = PAHigh(self.Highpaaddr, self.rm)
+        pm = PM(self.pmhighaddr, self.rm)
+        ct = CT(self.ctaddr, self.rm)
+        couple = CalHighFreq(freq / 1e3, fieldintensity, dist)
+        self.ThreadMessage("请连接好电场探头")
+        self.ThreadMessage("请连接%s天线进行测试" % couple["Antenna"])
+        ct.CTAntennaRoll(couple["Antenna"])
+        powertarget = couple["PowerMeter"]
+        print(couple)
+        self.ThreadMessage("请连接好电场探头")
+        poweriteritem = {
+            "target": powertarget, "freq": freq, "sg": sg, "pa": pa,
+            "pm": pm}
+        self.ThreadMessage("请连接好电场探头")
+        self.PowerIter(poweriteritem)
+        value = self.ReadValue()
+        sg.SGPowerOut("OFF")
+        pa.PAPowerOut("OFF")
+        sg.SGClose()
+        pa.PAClose()
+        pm.PMClose()
+        return value
+
+    def PowerIter(self, poweriteritem=None):
+        sg = poweriteritem["sg"]
+        pm = poweriteritem["pm"]
+        freq = poweriteritem["target"]
+        pa = poweriteritem["pa"]
         sg.SGCWFrec(freq)
         pm.PMSetFreq(freq)
         if highfreq:
@@ -226,9 +317,11 @@ class ProbeTest(QThread):
                           Type: "ETSSingle", read the value automatically.
         ===============   =====================================================
         """
-        if self.probetype is None:
-            value, ok1 = QInputDialog.getDouble(
-                None, "标题", "场强值:", value=0, min=0, max=1000, decimals=2)
+        if self.probetype is "Manual":
+            self.ThreadValueDialog()
+            value = self.value
+            print(value)
+            time.sleep(2)
         elif self.probetype == "ETS":
             probe = ETSProbe()
             value = probe.ProbeField()[3]
@@ -249,9 +342,14 @@ class ProbeTest(QThread):
         if antenna is not None:
             ct.CTAntennaRoll(antenna)
 
+    @pyqtSlot(float)
+    def GetValue(self, value):
+        self.value = value
+
+
 if __name__ == "__main__":
     import sys
     app = QApplication(sys.argv)
     test = ProbeTest()
-    test.FieldTestHighFreq([10, 20], [20, 34])
+    test.start()
     # test.ProbeTestHighFreq(freq=18000, fieldintensity=10, dist=0.7)

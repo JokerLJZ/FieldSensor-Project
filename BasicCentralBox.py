@@ -4,7 +4,7 @@ from PyQt5.QtCore import QDateTime, QTime
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (
     QWidget, QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton,
-    QDateTimeEdit, QVBoxLayout)
+    QDateTimeEdit, QVBoxLayout, QDateTimeEdit)
 
 
 class CentralBox(QWidget):
@@ -66,7 +66,7 @@ class CentralBox(QWidget):
         self.temperature_lineedit = QLineEdit()    # 温度
         self.humidity_lineedit = QLineEdit()    # 湿度
         self.tester_lineedit = QLineEdit()    # 测试人员
-        self.date_lineedit = QLineEdit()    # 测试日期
+        self.date_lineedit = QDateTimeEdit(QDateTime.currentDateTime())
         self.save_basicinfo_pushbutton = QPushButton("保存基本信息")
         self.get_serial_num_pushbutton = QPushButton("获取序列号")
         line_box = [

@@ -5,7 +5,8 @@ import sys
 import threading
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTextEdit
+from PyQt5.QtWidgets import (
+    QDialog, QVBoxLayout, QTextEdit, QMessageBox)
 from PyQt5.QtGui import QIcon, QPixmap, QPalette, QBrush
 
 
@@ -14,6 +15,9 @@ class EmittingStream(QtCore.QObject):
 
     def write(self, text):
         self.textWritten.emit(str(text))
+
+    def flush(self):
+        pass
 
 
 class TestDialog(QDialog):
